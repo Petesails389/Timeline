@@ -1,0 +1,76 @@
+[04-Apr-2025 19:14:08 UTC] PHP Warning:  Undefined array key "admin" in /var/www/html/accounts/account.php on line 52
+[14-Apr-2025 10:33:05 UTC] PHP Warning:  include(/maps/mapsdb.php): Failed to open stream: No such file or directory in /var/www/html/header.php on line 12
+[14-Apr-2025 10:33:05 UTC] PHP Warning:  include(): Failed opening '/maps/mapsdb.php' for inclusion (include_path='.:/usr/share/php') in /var/www/html/header.php on line 12
+[14-Apr-2025 10:33:05 UTC] PHP Fatal error:  Uncaught Error: Call to undefined function GetMaps() in /var/www/html/header.php:13
+Stack trace:
+#0 /var/www/html/accounts/account.php(3): include()
+#1 {main}
+  thrown in /var/www/html/header.php on line 13
+[14-Apr-2025 10:33:58 UTC] PHP Warning:  include(/maps/mapsdb.php): Failed to open stream: No such file or directory in /var/www/html/header.php on line 12
+[14-Apr-2025 10:33:58 UTC] PHP Warning:  include(): Failed opening '/maps/mapsdb.php' for inclusion (include_path='.:/usr/share/php') in /var/www/html/header.php on line 12
+[14-Apr-2025 10:33:58 UTC] PHP Fatal error:  Uncaught Error: Call to undefined function GetMaps() in /var/www/html/header.php:13
+Stack trace:
+#0 /var/www/html/accounts/account.php(3): include()
+#1 {main}
+  thrown in /var/www/html/header.php on line 13
+[24-Apr-2025 21:59:24 UTC] PHP Warning:  Undefined array key "redirect" in /var/www/html/accounts/login.php on line 42
+[24-Apr-2025 21:59:24 UTC] PHP Fatal error:  Uncaught TypeError: Unsupported operand types: string + null in /var/www/html/accounts/login.php:42
+Stack trace:
+#0 {main}
+  thrown in /var/www/html/accounts/login.php on line 42
+[24-Apr-2025 22:00:36 UTC] PHP Warning:  Undefined array key "redirect" in /var/www/html/accounts/login.php on line 42
+[24-Apr-2025 22:00:36 UTC] PHP Fatal error:  Uncaught TypeError: Unsupported operand types: string + null in /var/www/html/accounts/login.php:42
+Stack trace:
+#0 {main}
+  thrown in /var/www/html/accounts/login.php on line 42
+[24-Apr-2025 22:01:38 UTC] PHP Warning:  Undefined array key "redirect" in /var/www/html/accounts/login.php on line 42
+[24-Apr-2025 22:01:38 UTC] PHP Fatal error:  Uncaught TypeError: Unsupported operand types: string + null in /var/www/html/accounts/login.php:42
+Stack trace:
+#0 {main}
+  thrown in /var/www/html/accounts/login.php on line 42
+[24-Apr-2025 22:02:20 UTC] PHP Warning:  Undefined array key "redirect" in /var/www/html/accounts/login.php on line 42
+[24-Apr-2025 22:02:20 UTC] PHP Fatal error:  Uncaught TypeError: Unsupported operand types: string + null in /var/www/html/accounts/login.php:42
+Stack trace:
+#0 {main}
+  thrown in /var/www/html/accounts/login.php on line 42
+[24-Apr-2025 22:03:25 UTC] PHP Fatal error:  Uncaught TypeError: Unsupported operand types: string + string in /var/www/html/accounts/login.php:42
+Stack trace:
+#0 {main}
+  thrown in /var/www/html/accounts/login.php on line 42
+[16-May-2025 08:58:28 UTC] PHP Fatal error:  Uncaught TypeError: Unsupported operand types: string + string in /var/www/html/accounts/register.php:40
+Stack trace:
+#0 {main}
+  thrown in /var/www/html/accounts/register.php on line 40
+[16-May-2025 08:58:58 UTC] PHP Warning:  Undefined array key "admin" in /var/www/html/accounts/account.php on line 52
+[16-May-2025 08:59:16 UTC] PHP Warning:  Undefined array key "admin" in /var/www/html/accounts/account.php on line 52
+[16-May-2025 08:59:22 UTC] PHP Warning:  Undefined array key "admin" in /var/www/html/accounts/account.php on line 52
+[06-Jun-2025 14:19:23 UTC] PHP Fatal error:  Uncaught TypeError: Unsupported operand types: string + string in /var/www/html/accounts/register.php:40
+Stack trace:
+#0 {main}
+  thrown in /var/www/html/accounts/register.php on line 40
+[06-Jun-2025 14:20:25 UTC] PHP Warning:  Undefined array key "admin" in /var/www/html/accounts/account.php on line 52
+[06-Jun-2025 14:20:31 UTC] PHP Warning:  Undefined array key "admin" in /var/www/html/accounts/account.php on line 52
+[11-Jul-2025 16:52:25 UTC] PHP Fatal error:  Allowed memory size of 134217728 bytes exhausted (tried to allocate 4096 bytes) in /var/www/html/accounts/db.php on line 85
+[13-Jul-2025 08:24:41 UTC] PHP Warning:  Undefined variable $username in /var/www/html/accounts/manageaccount.php on line 24
+[13-Jul-2025 08:25:18 UTC] PHP Warning:  Undefined variable $username in /var/www/html/accounts/db.php on line 56
+[13-Jul-2025 08:25:30 UTC] PHP Warning:  Undefined variable $username in /var/www/html/accounts/db.php on line 56
+[13-Jul-2025 09:03:11 UTC] PHP Warning:  Array to string conversion in /var/www/html/accounts/db.php on line 39
+[13-Jul-2025 09:05:00 UTC] PHP Warning:  Array to string conversion in /var/www/html/accounts/deleteuser.php on line 39
+[13-Jul-2025 09:05:00 UTC] PHP Warning:  Array to string conversion in /var/www/html/accounts/db.php on line 39
+[13-Jul-2025 09:05:38 UTC] PHP Warning:  Undefined array key "admin" in /var/www/html/accounts/account.php on line 52
+[13-Jul-2025 09:05:51 UTC] PHP Warning:  Undefined array key "admin" in /var/www/html/accounts/account.php on line 52
+[13-Jul-2025 09:06:59 UTC] PHP Warning:  Undefined array key "admin" in /var/www/html/accounts/account.php on line 52
+[13-Jul-2025 09:13:43 UTC] PHP Parse error:  syntax error, unexpected token "==" in /var/www/html/accounts/account.php on line 52
+[13-Jul-2025 09:16:53 UTC] PHP Warning:  Undefined array key "admin" in /var/www/html/accounts/adminpage.php on line 17
+[13-Jul-2025 09:17:06 UTC] PHP Warning:  Undefined array key "admin" in /var/www/html/accounts/adminpage.php on line 17
+[13-Jul-2025 09:18:23 UTC] PHP Warning:  Undefined array key "admin" in /var/www/html/accounts/manageaccount.php on line 14
+[13-Jul-2025 09:36:18 UTC] PHP Warning:  Undefined array key "confirmPassword" in /var/www/html/accounts/changepassword.php on line 20
+[13-Jul-2025 09:36:19 UTC] PHP Warning:  Undefined array key "id" in /var/www/html/accounts/manageaccount.php on line 19
+[13-Jul-2025 09:38:41 UTC] PHP Warning:  Undefined array key "confirmPassword" in /var/www/html/accounts/changepassword.php on line 20
+[13-Jul-2025 09:38:42 UTC] PHP Warning:  Undefined array key "id" in /var/www/html/accounts/manageaccount.php on line 19
+[13-Jul-2025 09:39:02 UTC] PHP Warning:  Undefined array key "confirmPassword" in /var/www/html/accounts/changepassword.php on line 20
+[13-Jul-2025 09:40:34 UTC] PHP Warning:  Undefined array key "confirmPassword" in /var/www/html/accounts/changepassword.php on line 20
+[20-Jul-2025 20:48:19 UTC] PHP Fatal error:  Uncaught TypeError: Unsupported operand types: string + string in /var/www/html/accounts/register.php:40
+Stack trace:
+#0 {main}
+  thrown in /var/www/html/accounts/register.php on line 40

@@ -1,0 +1,151 @@
+* {
+	padding: 0px;
+	margin: 0px;
+}
+
+html, body {
+	height: 100%;
+}
+
+.main {
+	display: flex;
+	flex-direction: column;
+	height: 100%;
+}
+
+.content {
+	display: block;
+	flex: 1;
+	margin: 10px;
+}
+
+.nav {
+	width: 100%;
+	flex-shrink: 0;
+	z-index: 2;
+}
+
+.end {
+	width:100%;
+}
+
+h1,h2,h3,h4,h5,h6 {
+	text-decoration-line: underline;
+  font-family: inherit !important;
+}
+
+input[type=text] {   
+    outline: none;
+}
+
+
+.w3-theme-l5 {color:#000 !important; background-color:#fceaee !important}
+.w3-theme-l4 {color:#000 !important; background-color:#f7b8c6 !important}
+.w3-theme-l3 {color:#fff !important; background-color:#ee718e !important}
+.w3-theme-l2 {color:#fff !important; background-color:#e62955 !important}
+.w3-theme-l1 {color:#fff !important; background-color:#ac1437 !important}
+.w3-theme-d1 {color:#fff !important; background-color:#5a0b1d !important}
+.w3-theme-d2 {color:#fff !important; background-color:#50091a !important}
+.w3-theme-d3 {color:#fff !important; background-color:#460817 !important}
+.w3-theme-d4 {color:#fff !important; background-color:#3c0713 !important}
+.w3-theme-d5 {color:#fff !important; background-color:#320610 !important}
+
+.w3-theme-light {color:#000 !important; background-color:#fceaee !important}
+.w3-theme-dark {color:#fff !important; background-color:#320610 !important}
+.w3-theme-action {color:#fff !important; background-color:#320610 !important}
+
+.w3-theme {color:#fff !important; background-color:#660c21 !important}
+.w3-text-theme {color:#660c21 !important}
+.w3-border-theme {border-color:#660c21 !important; border-style: solid !important}
+
+.w3-hover-theme:hover {color:#fff !important; background-color:#660c21 !important}
+.w3-hover-text-theme:hover {color:#660c21 !important}
+.w3-hover-border-theme:hover {border-color:#5a0b1d !important}
+
+.w3-border-theme-select{border-color:#660c21}
+.w3-border-theme-select:focus {background-color:#660c21 !important; color:#fff !important; border-color:#5a0b1d !important}
+.w3-border-theme-select input:checked{
+  background-color: #660c21 !important;
+}
+
+.w3-dropdown-hover:hover > .w3-button:first-child,.w3-dropdown-click-theme:hover > .w3-button:first-child{color:#fff !important; background-color:#660c21 !important}
+
+input {
+    accent-color: 3c0713;
+}
+
+.resizable {
+	resize:both;
+}
+
+.tooltip {
+  position: relative;
+  display: inline-block;
+}
+
+
+/* Tooltip text */
+.tooltip .tooltiptext {
+  visibility: hidden;
+  width: 60px;
+  background-color: #320610;
+  color: #fff;
+  text-align: center;
+  padding: 4px 4px;
+  border-radius: 6px;
+  transition: opacity 0.5s;
+ 
+  /* Position the tooltip text - see examples below! */
+  position: absolute;
+  z-index: 1;
+  width: max-content;
+}
+
+/* Show the tooltip text when you mouse over the tooltip container */
+.tooltip:hover .tooltiptext {
+  visibility: visible;
+  
+}
+
+ .tooltip .tooltiptext {
+  top: -5px;
+  left: 110%;
+}
+
+.bingo-inner {
+	height: 100%;
+	text-wrap: wrap;
+	font-size:1.5vh;
+	padding: 5px 1px 5px 1px;
+}
+
+
+
+/**
+ * Author: Ilya Ilyankou <https://github.com/ilyankou>
+ * License: MIT
+ * Version: 1.0
+ */ 
+
+ .l-icon-material {
+  position: absolute;
+  left: 0;
+  top: 0;
+  display: block;
+  text-align: center;
+}
+
+.l-icon-material .material-icons {
+  font-size: 17px;
+}
+
+.mapIcon {
+  color: #50091a;
+  font-variation-settings:
+  'FILL' 100,
+  'wght' 400,
+  'GRAD' 0,
+  'opsz' 30
+  !important;
+  font-size: 30px;
+}
