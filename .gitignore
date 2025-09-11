@@ -1,1 +1,2 @@
-db.sqlite
+accounts/db.sqlite
+accounts/php_errors.log
