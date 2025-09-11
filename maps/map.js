@@ -183,11 +183,12 @@ function drawTimeline(routes) {
     var x = [];
     var y = [];
 
-    var start = new Date((routes[0][0][2])*1000).toISOString().replace("T", " ");
+    var timezoneOffset = new Date().getTimezoneOffset() * 60000;
+    var start = new Date((routes[0][0][2])*1000 - timezoneOffset).toISOString().replace("T", " ");
 
 	for (let i in routes) {
-        let start = new Date((routes[i][0][2])*1000).toISOString().replace("T", " ");
-        let end = new Date((routes[i][routes[i].length-1][2])*1000).toISOString().replace("T", " ");
+        let start = new Date((routes[i][0][2])*1000 - timezoneOffset).toISOString().replace("T", " ");
+        let end = new Date((routes[i][routes[i].length-1][2])*1000 - timezoneOffset).toISOString().replace("T", " ");
 
         x.push(start,start,end,end);
         y.push(-0.5,1.5,1.5,-0.5)
