@@ -12,9 +12,6 @@ $name = GetMapName($mapID);
 $markers = GetMarkers($_GET["mapID"]);
 
 //get points on the map
-if (!$permissions[1]) {
-    $day = min(time()-(8640+3600),$day);// limit veiw to be delayed by an hour
-}
 $points = GetPoints($_GET["mapID"],$day+86400-$duration,$duration);
 
 //process points

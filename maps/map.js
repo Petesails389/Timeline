@@ -2,13 +2,23 @@ function getData() {
     //Change url & call data get
     var url = new URL(document.URL);
 
+    var day = document.getElementById("day").value;
+    var duration = document.getElementById("duration").value;
+
+    url.searchParams.set('day', day);
+    url.searchParams.set('duration', duration);
+    history.pushState(null, "", url.href);
+
     url.pathname = url.pathname.replace("viewmap.php","points.js.php");
+
     fetch(url.href, { credentials: 'include' })
       .then(response => response.json())
       .then(json => {
         //if you have history access then render timeline
         if (json.history) {
-            drawTimeline(json.routes);
+            //add one day to date due to difference with PHP date handeling
+            let day = new Date(json.day).valueOf() / 1000 + 86400;
+            drawTimeline(json.routes, day - json.duration, day);
         }
         processData(json)
       });
@@ -16,6 +26,13 @@ function getData() {
 
 function processData(jsonIn) {
     json = jsonIn;
+
+    globalDuration = json.duration
+
+    //clear layers
+    routesLayer.clearLayers();
+    highlightLayer.clearLayers();
+    markers.clearLayers();
 
     //draw markers
     if (json.markers) {
@@ -39,7 +56,7 @@ function processData(jsonIn) {
 
     //draw points
     if (json.displayPoints && json.routes && (json.displayPoints.length > 0 || json.routes.length > 0)) {
-        heatmap(json.displayPoints, json.routes);
+        drawRoutes(json.displayPoints, json.routes, json.duration > 604800);
     } else {
         if (json.last) {
             map.flyTo(json.last, 15, {
@@ -62,28 +79,34 @@ function processData(jsonIn) {
     }
 
     //display the layers in the right order
-    map.addLayer(heatmapLayer);
     map.addLayer(routesLayer);
-    map.removeLayer(markers);
+    map.addLayer(highlightLayer);
+    map.addLayer(markers);
 }
 
-function heatmap(displayPoints, routes) {
+function drawRoutes(displayPoints, routes, heatmap) {
 
-    // add routes to heatmap
-    for (let i in routes){
-        L.corridor(routes[i], {color: '#00008B', opacity: 1, corridor: 10, minWeight: 1.5}).addTo(heatmapLayer);
-    }
-    for (let i in routes){
-        L.corridor(routes[i], {color: '#7DF9FF', opacity: 0.2, corridor: 5, minWeight: 1}).addTo(heatmapLayer);
-    }
-    for (let i in routes){
-        L.corridor(routes[i], {color: '#FFFFFF', opacity: 0.05, corridor: 2, minWeight: 0.5}).addTo(heatmapLayer);
+    if (heatmap) {
+        // display routes as heatmap
+        for (let i in routes){
+            L.corridor(routes[i], {color: '#00008B', opacity: 1, corridor: 10, minWeight: 1.5}).addTo(routesLayer);
+        }
+        for (let i in routes){
+            L.corridor(routes[i], {color: '#7DF9FF', opacity: 0.2, corridor: 5, minWeight: 1}).addTo(routesLayer);
+        }
+        for (let i in routes){
+            L.corridor(routes[i], {color: '#FFFFFF', opacity: 0.05, corridor: 2, minWeight: 0.5}).addTo(routesLayer);
+        }
+    } else {
+        for (let i in routes){
+            L.polyline(json.routes[i], {color: '#e62955'}).addTo(routesLayer);
+        }
     }
 
     //add points to heatmap
     for (let i in displayPoints){
-        //L.circle([displayPoints[i][0],displayPoints[i][1]], {radius: 0.5, fillColor: '#f34723', fillOpacity: 1, color: '#f34723', weight: 1}).addTo(routesLayer);
-        L.circleMarker([displayPoints[i][0],displayPoints[i][1]], {radius: 1, fillColor: '#7DF9FF', fillOpacity: 0.1, stroke: false}).addTo(heatmapLayer);
+        //L.circle([displayPoints[i][0],displayPoints[i][1]], {radius: 0.5, fillColor: '#f34723', fillOpacity: 1, color: '#f34723', weight: 1}).addTo(highlightLayer);
+        //L.circleMarker([displayPoints[i][0],displayPoints[i][1]], {radius: 1, fillColor: '#7DF9FF', fillOpacity: 0.1, stroke: false}).addTo(routesLayer);
     }
 
     //fit bounds
@@ -95,7 +118,7 @@ function heatmap(displayPoints, routes) {
 }
 
 //draws routes in time range
-function drawAsRoutes(start, end) {
+function highlight(start, end) {
     var localBounds = L.latLngBounds();
     for (let i in json.routes){
         var routeStart = json.routes[i][0][2];
@@ -103,16 +126,16 @@ function drawAsRoutes(start, end) {
         if ((start <= routeStart && routeStart <= end)
         || (start <= routeEnd && routeEnd <= end)){
             //add to layer
-            L.polyline(json.routes[i], {color: '#f34723'}).addTo(routesLayer);
+            L.polyline(json.routes[i], {color: '#000000'}).addTo(highlightLayer);
             //extend bounds
             localBounds.extend(L.latLngBounds(json.routes[i]));
         }
     }
     //fit bounds
-    map.fitBounds(localBounds, {
-        animate: true,
-        duration: 1
-    });
+    // map.fitBounds(localBounds, {
+    //     animate: true,
+    //     duration: 1
+    // });
 }
 
 function drawMap() {
@@ -151,7 +174,7 @@ function drawMap() {
     map = L.map('map', {
         center: [0,0],
         zoom: 10,
-        layers: [osm, routesLayer, markers]
+        layers: [osm, highlightLayer, markers]
     });
 
     //layer controls
@@ -167,9 +190,7 @@ function drawMap() {
     };
 
     var overlayLayers = {
-        "Routes": routesLayer,
-        "Markers": markers,
-        "Heat Map": heatmapLayer
+        "Markers": markers
     };
 
     var layerControl = L.control.layers(baseMaps, overlayLayers, {position: 'bottomleft'}).addTo(map);
@@ -177,14 +198,15 @@ function drawMap() {
     getData()
 }
 
-function drawTimeline(routes) {
+function drawTimeline(routes, start, end) {
     timeline = document.getElementById('timeline');
 
     var x = [];
     var y = [];
 
     var timezoneOffset = new Date().getTimezoneOffset() * 60000;
-    var start = new Date((routes[0][0][2])*1000 - timezoneOffset).toISOString().replace("T", " ");
+    var start = new Date((start)*1000 - timezoneOffset).toISOString().replace("T", " ");
+    var end = new Date((end)*1000 - timezoneOffset).toISOString().replace("T", " ");
 
 	for (let i in routes) {
         let start = new Date((routes[i][0][2])*1000 - timezoneOffset).toISOString().replace("T", " ");
@@ -222,35 +244,8 @@ function drawTimeline(routes) {
         showlegend: false,
         xaxis: {
             autorange: false,
-            range: [start, new Date().toISOString().replace("T", " ")],
-            rangeselector: {buttons: [
-                {
-                    count: 1,
-                    label: '1d',
-                    step: 'day',
-                    stepmode: 'backward'
-                },
-                {
-                    count: 7,
-                    label: '1w',
-                    step: 'day',
-                    stepmode: 'backward'
-                },
-                {
-                    count: 1,
-                    label: '1m',
-                    step: 'month',
-                    stepmode: 'backward'
-                },
-                {
-                    count: 6,
-                    label: '6m',
-                    step: 'month',
-                    stepmode: 'backward'
-                },
-                {step: 'all'}
-            ]},
-            rangeslider: {range: [start, new Date().toISOString().replace("T", " ")]},
+            range: [start, end],
+            rangeslider: {range: [start, end]},
             type: 'date'
         },
         yaxis: {
@@ -269,29 +264,19 @@ function drawTimeline(routes) {
     Plotly.newPlot(timeline, data, layout, config);
 
     timeline.on('plotly_relayout', function(eventData) {
-        routesLayer.clearLayers();
+        highlightLayer.clearLayers();
 
         if (eventData['xaxis.range[0]']){
             var start = new Date(eventData['xaxis.range[0]']).valueOf()/1000;
             var end = new Date(eventData['xaxis.range[1]']).valueOf()/1000;
-
             var duration = end - start;
 
-            if (duration <= 604800) {
-                drawAsRoutes(start, end);
-
-                //change layers
-                map.addLayer(routesLayer);
-                map.addLayer(markers);
-                map.removeLayer(heatmapLayer);
-
+            highlightLayer.clearLayers();
+            if (duration < globalDuration) {
+                highlight(start, end);
                 return;
             }
         }
-        //change layers
-        map.removeLayer(routesLayer);
-        map.removeLayer(markers);
-        map.addLayer(heatmapLayer);
 
         //zoom to heatmap
         map.fitBounds(bounds, {
@@ -305,10 +290,11 @@ function drawTimeline(routes) {
 var map;
 var json;
 var bounds;
+var globalDuration
 
 //overlay layers
+var highlightLayer =  L.layerGroup("");
 var routesLayer =  L.layerGroup("");
-var heatmapLayer =  L.layerGroup("");
 var markers = L.layerGroup("");
 
 //icons

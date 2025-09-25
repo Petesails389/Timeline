@@ -17,7 +17,7 @@ include "util.inc";
     crossorigin=""></script>
 <script src="leaflet-corridor.js?1"></script>
 <script src="leaflet.icon-material.js"></script>
-<script src="map.js?b3"></script>
+<script src="map.js?b9"></script>
 
 <style>
     .content {
@@ -47,31 +47,31 @@ function menu_close() {
  <!-- menu -->
 <div style='position: relative;'>
     <div class='w3-bar w3-theme-d1' style='position: absolute; top: 0px; right: 0px; width: fit-content; z-index: 1000; margin: 10px;'>
-            <!-- <div class="w3-hide-small w3-bar-item w3 right" style="padding: 0px; width: 344px;">
+            <div class="w3-hide-small w3-bar-item w3 right" style="padding: 0px; width: 344px;">
                 <h5 id='title' style='padding: 10px; margin: 0px;' class='w3-theme-d1'>Map</h5>
-            </div> -->
-            <a class='w3-bar-item w3-button w3-hover-theme w3-right' href='settings.php?mapID=<?php echo $_GET["mapID"]; ?>'>
+            </div>
+            <!-- <a class='w3-bar-item w3-button w3-hover-theme w3-right' href='settings.php?mapID=<php echo $_GET["mapID"]; ?>'>
                 <span class='material-symbols-outlined w3-display-center'>settings</span>
-            </a>
-            <!-- <button class="w3-bar-item w3-button w3-hover-theme w3-right" onclick="menu_close()" id="menuButton"><span class="material-symbols-outlined">close</span></button> -->
+            </a> -->
+            <button class="w3-bar-item w3-button w3-hover-theme w3-right" onclick="menu_close()" id="menuButton"><span class="material-symbols-outlined">close</span></button>
     </div>
-    <!-- <div id="menu" class='w3-theme-l5' style='display: block; position: absolute; top: 50px; right: 0px; width: min(400px, calc(100% - 20px)); z-index: 1000; margin: 10px;'>
+     <div id="menu" class='w3-theme-l5' style='display: block; position: absolute; top: 50px; right: 0px; width: min(400px, calc(100% - 20px)); z-index: 1000; margin: 10px;'>
         <div style="padding: 10px;">
-            <a class='w3-button w3-hover-theme w3-display w3-margin w3-display-topright' style='padding: 7px 7px 1px 8px;' href='settings.php?mapID=<php echo $_GET["mapID"]; ?>'>
+            <a class='w3-button w3-hover-theme w3-display w3-margin w3-display-topright' style='padding: 7px 7px 1px 8px;' href='settings.php?mapID=<?php echo $_GET["mapID"]; ?>'>
                 <span class='material-symbols-outlined w3-display-center'>settings</span>
             </a>
             <h5>Change Map</h5>
             <form id="changeForm" action="" method="get">
-                <input onChange="getData()" name="day" id="day" type="date" value="<php echo Date("Y-m-d",$day);?>" max="<php echo date("Y-m-d");?>"><br><br>
+                <input onChange="getData()" name="day" id="day" type="date" value="<?php echo Date("Y-m-d",$day);?>"><br><br>
                 <select onChange="getData()" id="duration" name="duration">
-                    <option value="86400" <php if ($duration == 86400){echo"selected";}?>>1 day</option>
-                    <option value="604800" <php if ($duration == 604800){echo"selected";}?>>1 week</option>
-                    <option value="2678400" <php if ($duration == 2678400){echo"selected";}?>>1 month</option>
-                    <option value="31536000" <php if ($duration == 31536000){echo"selected";}?>>1 year</option>
-                    <option value="10000000000" <php if ($duration == 10000000000){echo"selected";}?>>All Time</option>
+                    <option value="86400" <?php if ($duration == 86400){echo"selected";}?>>1 day</option>
+                    <option value="604800" <?php if ($duration == 604800){echo"selected";}?>>1 week</option>
+                    <option value="2678400" <?php if ($duration == 2678400){echo"selected";}?>>1 month</option>
+                    <option value="31536000" <?php if ($duration == 31536000){echo"selected";}?>>1 year</option>
+                    <option value="10000000000" <?php if ($duration == 10000000000){echo"selected";}?>>All Time</option>
                 </select> 
             </form>
-        </div> -->
+        </div>
     </div>
 </div>
 
