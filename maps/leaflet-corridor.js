@@ -70,6 +70,6 @@ L.Corridor = L.Polyline.extend({
   L.corridor = function (latlngs, options) {
     options = options || {};
     options.corridor = options.corridor || 100;
-    options.minWeight = options.minWeight || 3;
+    options.minWeight = options.minWeight || 0;
     return new L.Corridor(latlngs, options);
   }

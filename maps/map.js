@@ -71,13 +71,13 @@ function heatmap(displayPoints, routes) {
 
     // add routes to heatmap
     for (let i in routes){
-        L.corridor(routes[i], {color: '#00008B', opacity: 1, corridor: 10}).addTo(heatmapLayer);
+        L.corridor(routes[i], {color: '#00008B', opacity: 1, corridor: 10, minWeight: 1.5}).addTo(heatmapLayer);
     }
     for (let i in routes){
-        L.corridor(routes[i], {color: '#7DF9FF', opacity: 0.2, corridor: 5, minWeight: 2}).addTo(heatmapLayer);
+        L.corridor(routes[i], {color: '#7DF9FF', opacity: 0.2, corridor: 5, minWeight: 1}).addTo(heatmapLayer);
     }
     for (let i in routes){
-        L.corridor(routes[i], {color: '#FFFFFF', opacity: 0.05, corridor: 2, minWeight: 1}).addTo(heatmapLayer);
+        L.corridor(routes[i], {color: '#FFFFFF', opacity: 0.05, corridor: 2, minWeight: 0.5}).addTo(heatmapLayer);
     }
 
     //add points to heatmap
