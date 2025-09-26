@@ -24,6 +24,19 @@ function averageSpeed($p1, $p2) {
     return vincentyGreatCircleDistance($p1[0],$p1[1],$p2[0],$p2[1]) / abs($p1[2] - $p2[2]);
 }
 
+function averageRouteSpeed($route){
+    if (count($route) <= 1 || ($route[count($route) - 1][2] - $route[0][2]) == 0) {
+        return 0;
+    }
+    $distance = 0;
+    for ($key = 1; $key < count($route); $key ++) {
+        $p1 = $route[$key -1];
+        $p2 = $route[$key];
+        $distance += vincentyGreatCircleDistance($p1[0],$p1[1],$p2[0],$p2[1]);
+    }
+    return $distance / ($route[count($route) - 1][2] - $route[0][2]);
+}
+
 if (!isset($_SESSION['username'])) {
     $_SESSION["redirect"] = $_SERVER["PHP_SELF"] . "?" . $_SERVER['QUERY_STRING'];
     header("Location: ../accounts/login.php");
