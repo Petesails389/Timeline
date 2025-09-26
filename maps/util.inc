@@ -47,7 +47,7 @@ $duration = $permissions[2]-$permissions[3];
 //if allowed to browse history
 if ($permissions[0]){
     if (isset($_GET["day"])) {
-        $day = min(max($permissions[3],$_GET["day"]),$permissions[2]);
+        $day = min(max($permissions[3],strtotime($_GET["day"])),$permissions[2]);
     }
     if (isset($_GET["duration"])) {
         $duration = max(min($day-$permissions[3],$_GET["duration"]),1);
