@@ -17,7 +17,7 @@ include "util.inc";
     crossorigin=""></script>
 <script src="leaflet-corridor.js?1"></script>
 <script src="leaflet.icon-material.js"></script>
-<script src="map.js?b9"></script>
+<script src="map.js?b13"></script>
 
 <style>
     .content {
@@ -62,7 +62,7 @@ function menu_close() {
             </a>
             <h5>Change Map</h5>
             <form id="changeForm" action="" method="get">
-                <input onChange="getData()" name="day" id="day" type="date" value="<?php echo Date("Y-m-d",$day);?>"><br><br>
+                <input onChange="getData()" name="day" id="day" type="date" value="<?php echo Date("Y-m-d",$day-86400);?>"><br><br>
                 <select onChange="getData()" id="duration" name="duration">
                     <option value="86400" <?php if ($duration == 86400){echo"selected";}?>>1 day</option>
                     <option value="604800" <?php if ($duration == 604800){echo"selected";}?>>1 week</option>

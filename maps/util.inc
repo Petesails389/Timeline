@@ -16,6 +16,10 @@ function vincentyGreatCircleDistance($latitudeFrom, $longitudeFrom, $latitudeTo,
     return $angle * $earthRadius;
 }
 
+function distance($p1, $p2){
+    return vincentyGreatCircleDistance($p1[0],$p1[1],$p2[0],$p2[1]);
+}
+
 //returns the average speed between 2 points in m/s
 function averageSpeed($p1, $p2) {
     if ($p1[2] - $p2[2] == 0) {
@@ -63,7 +67,7 @@ $duration = $permissions[2]-$permissions[3];
 //if allowed to browse history
 if ($permissions[0]){
     if (isset($_GET["day"])) {
-        $day = min(max($permissions[3],strtotime($_GET["day"])),$permissions[2]);
+        $day = min(max($permissions[3],strtotime($_GET["day"])),$permissions[2])+86400;
     }
     if (isset($_GET["duration"])) {
         $duration = max(min($day-$permissions[3],$_GET["duration"]),1);

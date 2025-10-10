@@ -16,8 +16,7 @@ function getData() {
       .then(json => {
         //if you have history access then render timeline
         if (json.history) {
-            //add one day to date due to difference with PHP date handeling
-            let day = new Date(json.day).valueOf() / 1000 + 86400;
+            let day = new Date(json.day).valueOf() / 1000;
             drawTimeline(json.routes, day - json.duration, day);
         }
         processData(json)
@@ -55,8 +54,8 @@ function processData(jsonIn) {
     }
 
     //draw points
-    if (json.displayPoints && json.routes && (json.displayPoints.length > 0 || json.routes.length > 0)) {
-        drawRoutes(json.displayPoints, json.routes, json.duration > 604800);
+    if (json.routes && json.routes.length > 0) {
+        drawRoutes(json.routes, json.duration > 604800);
     } else {
         if (json.last) {
             map.flyTo(json.last, 15, {
@@ -84,33 +83,36 @@ function processData(jsonIn) {
     map.addLayer(markers);
 }
 
-function drawRoutes(displayPoints, routes, heatmap) {
+function drawRoutes(routes, heatmap) {
 
     if (heatmap) {
         // display routes as heatmap
         for (let i in routes){
-            L.corridor(routes[i], {color: '#00008B', opacity: 1, corridor: 10, minWeight: 1.5}).addTo(routesLayer);
+            L.corridor(routes[i][1], {color: '#00008B', opacity: 1, corridor: 10, minWeight: 1.5}).addTo(routesLayer);
         }
         for (let i in routes){
-            L.corridor(routes[i], {color: '#7DF9FF', opacity: 0.2, corridor: 5, minWeight: 1}).addTo(routesLayer);
+            L.corridor(routes[i][1], {color: '#7DF9FF', opacity: 0.2, corridor: 5, minWeight: 1}).addTo(routesLayer);
         }
         for (let i in routes){
-            L.corridor(routes[i], {color: '#FFFFFF', opacity: 0.05, corridor: 2, minWeight: 0.5}).addTo(routesLayer);
+            L.corridor(routes[i][1], {color: '#FFFFFF', opacity: 0.05, corridor: 2, minWeight: 0.5}).addTo(routesLayer);
         }
     } else {
         for (let i in routes){
-            L.polyline(json.routes[i], {color: '#e62955'}).addTo(routesLayer);
+            L.polyline(json.routes[i][1], {color: '#e62955'}).addTo(routesLayer);
         }
     }
 
-    //add points to heatmap
-    for (let i in displayPoints){
-        //L.circle([displayPoints[i][0],displayPoints[i][1]], {radius: 0.5, fillColor: '#f34723', fillOpacity: 1, color: '#f34723', weight: 1}).addTo(highlightLayer);
-        //L.circleMarker([displayPoints[i][0],displayPoints[i][1]], {radius: 1, fillColor: '#7DF9FF', fillOpacity: 0.1, stroke: false}).addTo(routesLayer);
-    }
+    // //add points to heatmap
+    // for (let i in displayPoints){
+    //     //L.circle([displayPoints[i][0],displayPoints[i][1]], {radius: 0.5, fillColor: '#f34723', fillOpacity: 1, color: '#f34723', weight: 1}).addTo(highlightLayer);
+    //     //L.circleMarker([displayPoints[i][0],displayPoints[i][1]], {radius: 1, fillColor: '#7DF9FF', fillOpacity: 0.1, stroke: false}).addTo(routesLayer);
+    // }
 
     //fit bounds
-    bounds = L.latLngBounds(routes,displayPoints);
+    bounds = L.latLngBounds(routes[0][1]);
+    for (let key = 1; key < routes.length; key ++) {
+        bounds.extend(routes[key][1])
+    }
     map.fitBounds(bounds, {
         animate: true,
         duration: 1
@@ -121,14 +123,14 @@ function drawRoutes(displayPoints, routes, heatmap) {
 function highlight(start, end) {
     var localBounds = L.latLngBounds();
     for (let i in json.routes){
-        var routeStart = json.routes[i][0][2];
-        var routeEnd = json.routes[i][json.routes[i].length-1][2];
+        var routeStart = json.routes[i][0][0];
+        var routeEnd = json.routes[i][0][1];
         if ((start <= routeStart && routeStart <= end)
         || (start <= routeEnd && routeEnd <= end)){
             //add to layer
-            L.polyline(json.routes[i], {color: '#000000'}).addTo(highlightLayer);
+            L.polyline(json.routes[i][1], {color: '#000000'}).addTo(highlightLayer);
             //extend bounds
-            localBounds.extend(L.latLngBounds(json.routes[i]));
+            localBounds.extend(L.latLngBounds(json.routes[i][1]));
         }
     }
     //fit bounds
@@ -201,29 +203,38 @@ function drawMap() {
 function drawTimeline(routes, start, end) {
     timeline = document.getElementById('timeline');
 
-    var x = [];
-    var y = [];
+    var x = [[],[],[],[],[]];
+    var y = [[],[],[],[],[]];
 
     var timezoneOffset = new Date().getTimezoneOffset() * 60000;
     var start = new Date((start)*1000 - timezoneOffset).toISOString().replace("T", " ");
     var end = new Date((end)*1000 - timezoneOffset).toISOString().replace("T", " ");
 
-	for (let i in routes) {
-        let start = new Date((routes[i][0][2])*1000 - timezoneOffset).toISOString().replace("T", " ");
-        let end = new Date((routes[i][routes[i].length-1][2])*1000 - timezoneOffset).toISOString().replace("T", " ");
+    for (let i in routes) {
+        let start = new Date((routes[i][0][0])*1000 - timezoneOffset).toISOString().replace("T", " ");
+        let end = new Date((routes[i][0][1])*1000 - timezoneOffset).toISOString().replace("T", " ");
 
-        x.push(start,start,end,end);
-        y.push(-0.5,1.5,1.5,-0.5)
+        x[routes[i][0][2]].push(start,start,end,end);
+        y[routes[i][0][2]].push(-0.5,1.5,1.5,-0.5);
     }
 
-    var trace = {
-        x: x,
-        y: y,
-        fill: 'tozeroy',
-        type: 'scatter'
-    };
+    var colors = ['#000000','#ae1919ff','#be6c19ff','#e0d20aff','#48d013ff'];
+    var data = [];
 
-    data = [trace];
+    for (let i = 0; i < 5; i++) {
+        var trace = {
+            x: x[i],
+            y: y[i],
+            fill: 'tozeroy',
+            type: 'scatter',
+            marker: {
+                color: colors[i],
+                size: 0,
+            },
+        };
+        data.push(trace);
+    }
+    console.log(data);
 
     var layout = {
         title: {

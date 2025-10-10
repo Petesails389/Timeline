@@ -23,6 +23,23 @@ $db->exec("CREATE TABLE IF NOT EXISTS mapDataPoints (
     FOREIGN KEY (mapID) REFERENCES maps(id) ON DELETE CASCADE
 );");
 
+// Rotue types:
+// 0 - UNDEFINED (default)
+// 2 - walking
+// 1 - cycling
+// 3 - driving
+// 4 - fast (train/plane?)
+
+#$db->exec('DROP TABLE IF EXISTS mapRoutes');
+$db->exec("CREATE TABLE IF NOT EXISTS mapRoutes (
+    mapID INTEGER,
+    startTime INT NOT NULL,
+    endTime INT NOT NULL,
+    routeType INT DEFAULT 0,
+    PRIMARY KEY (mapID,startTime),
+    FOREIGN KEY (mapID) REFERENCES maps(id) ON DELETE CASCADE
+);");
+
 #$db->exec('DROP TABLE IF EXISTS mapShares');
 $db->exec("CREATE TABLE IF NOT EXISTS mapShares (
     mapID INTEGER,
@@ -127,18 +144,6 @@ function GetShared($userID){
     return $result;
 }
 
-function AddPoint($mapID, $lat, $lng, $time, $speed = NULL, $elevation = NULL) {
-    global $db;
-    $statement = $db->prepare('INSERT OR REPLACE INTO mapDataPoints (mapID, lat, lng, time, speed, elevation) VALUES (:mapID, :lat, :lng, :time, :speed, :elevation)');
-    $statement->bindValue(':mapID',$mapID);
-    $statement->bindValue(':lat',$lat);
-    $statement->bindValue(':lng',$lng);
-    $statement->bindValue(':time',$time);
-    $statement->bindValue(':speed',$speed);
-    $statement->bindValue(':elevation',$elevation);
-    $statement->execute();
-}
-
 function GetCenter($mapID){
     global $db;
     $statement = $db->prepare('SELECT centerLat,CenterLng FROM maps WHERE id = :mapID');
@@ -149,6 +154,42 @@ function GetCenter($mapID){
     }
     return $result;
 }
+
+function AddPoint($mapID, $lat, $lng, $time, $speed = NULL, $elevation = NULL, $mapType = 0) {
+    global $db;
+    $statement = $db->prepare('INSERT OR REPLACE INTO mapDataPoints (mapID, lat, lng, time, speed, elevation) VALUES (:mapID, :lat, :lng, :time, :speed, :elevation)');
+    $statement->bindValue(':mapID',$mapID);
+    $statement->bindValue(':lat',$lat);
+    $statement->bindValue(':lng',$lng);
+    $statement->bindValue(':time',$time);
+    $statement->bindValue(':speed',$speed);
+    $statement->bindValue(':elevation',$elevation);
+    $statement->bindValue(':mapType',$mapType);
+    $statement->execute();
+}
+
+function AddRoute($mapID, $startTime, $endTime, $routeType = 0) {
+    global $db;
+    $statement = $db->prepare('INSERT OR REPLACE INTO mapRoutes (mapID, startTime, endTime, routeType) VALUES (:mapID, :startTime, :endTime, :routeType)');
+    $statement->bindValue(':mapID',$mapID);
+    $statement->bindValue(':startTime',$startTime);
+    $statement->bindValue(':endTime',$endTime);
+    $statement->bindValue(':routeType',$routeType);
+    $statement->execute();
+}
+
+function ClearRoutes($mapID,$day = NULL, $duration=86400){
+    if ($day == NULL) {
+        $day = strtotime(date("Y-m-d"));
+    }
+    global $db;
+    $statement = $db->prepare('DELETE FROM mapRoutes WHERE mapID = :mapID AND startTime >= :startTime AND startTime <= :endTime');
+    $statement->bindValue(':mapID',$mapID);
+    $statement->bindValue(':startTime',$day-$duration);
+    $statement->bindValue(':endTime',$day);
+    $statement->execute();
+}
+
 function GetPoints($mapID,$day = NULL, $duration=86400){
     if ($day == NULL) {
         $day = strtotime(date("Y-m-d"));
@@ -156,8 +197,8 @@ function GetPoints($mapID,$day = NULL, $duration=86400){
     global $db;
     $statement = $db->prepare('SELECT lat,lng,time FROM mapDataPoints WHERE mapID = :mapID AND time >= :startTime AND time <= :endTime ORDER BY time');
     $statement->bindValue(':mapID',$mapID);
-    $statement->bindValue(':startTime',$day);
-    $statement->bindValue(':endTime',$day+$duration);
+    $statement->bindValue(':startTime',$day-$duration);
+    $statement->bindValue(':endTime',$day);
     $results = [];
     $result = $statement->execute();
     $next = $result->fetchArray(SQLITE3_NUM);
@@ -168,6 +209,27 @@ function GetPoints($mapID,$day = NULL, $duration=86400){
     $result->finalize();
     return $results;
 }
+
+function GetRoutes($mapID,$day = NULL, $duration=86400){
+    if ($day == NULL) {
+        $day = strtotime(date("Y-m-d"));
+    }
+    global $db;
+    $statement = $db->prepare('SELECT startTime, endTime, routeType FROM mapRoutes WHERE mapID = :mapID AND endTime >= :startTime AND startTime <= :endTime ORDER BY startTime');
+    $statement->bindValue(':mapID',$mapID);
+    $statement->bindValue(':startTime',$day-$duration);
+    $statement->bindValue(':endTime',$day);
+    $results = [];
+    $result = $statement->execute();
+    $next = $result->fetchArray(SQLITE3_NUM);
+    while ($next != false){
+        $results[] = $next;
+        $next = $result->fetchArray(SQLITE3_NUM);
+    }
+    $result->finalize();
+    return $results;
+}
+
 function GetLastLocation($mapID){
     global $db;
     $statement = $db->prepare('SELECT lat,lng,time FROM mapDataPoints WHERE mapID = :mapID ORDER BY time DESC');
