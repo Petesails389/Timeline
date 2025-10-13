@@ -16,6 +16,52 @@ function vincentyGreatCircleDistance($latitudeFrom, $longitudeFrom, $latitudeTo,
     return $angle * $earthRadius;
 }
 
+function getRhumbLineBearing($lat1, $lon1, $lat2, $lon2) {
+  //difference in longitudinal coordinates
+  $dLon = deg2rad($lon2) - deg2rad($lon1);
+
+  //difference in the phi of latitudinal coordinates
+  $dPhi = log(tan(deg2rad($lat2) / 2 + pi() / 4) / tan(deg2rad($lat1) / 2 + pi() / 4));
+
+  //we need to recalculate $dLon if it is greater than pi
+  if(abs($dLon) > pi()) {
+    if($dLon > 0) {
+      $dLon = (2 * pi() - $dLon) * -1;
+    }
+    else {
+      $dLon = 2 * pi() + $dLon;
+    }
+  }
+  //return the angle, normalized
+  return (rad2deg(atan2($dLon, $dPhi)) + 360) % 360;
+}
+
+function bearing($p1, $p2){
+    return getRhumbLineBearing($p1[0],$p1[1],$p2[0],$p2[1]);
+}
+
+function totalRouteRotation($route){
+    if (count($route) <= 2) {
+        return 0;
+    }
+    $totalRotation = 0;
+    $lastbearing = bearing($route[0],$route[1]);
+    for ($key = 2; $key < count($route); $key ++) {
+        $bearing = bearing($route[$key -1], $route[$key]);
+        $difference = $lastbearing-$bearing;
+        if ($difference < -180) {
+            $difference = $difference + 360;
+        }
+        if ($difference > 180) {
+            $difference = $difference - 360;
+        }
+        $totalRotation += $difference;
+        $lastbearing = $bearing;
+    }
+
+    return $totalRotation;
+}
+
 function distance($p1, $p2){
     return vincentyGreatCircleDistance($p1[0],$p1[1],$p2[0],$p2[1]);
 }
@@ -28,8 +74,8 @@ function averageSpeed($p1, $p2) {
     return vincentyGreatCircleDistance($p1[0],$p1[1],$p2[0],$p2[1]) / abs($p1[2] - $p2[2]);
 }
 
-function averageRouteSpeed($route){
-    if (count($route) <= 1 || ($route[count($route) - 1][2] - $route[0][2]) == 0) {
+function totalRouteDistance($route){
+    if (count($route) <= 1){
         return 0;
     }
     $distance = 0;
@@ -38,7 +84,29 @@ function averageRouteSpeed($route){
         $p2 = $route[$key];
         $distance += vincentyGreatCircleDistance($p1[0],$p1[1],$p2[0],$p2[1]);
     }
-    return $distance / ($route[count($route) - 1][2] - $route[0][2]);
+    return $distance;
+}
+
+function averageRouteSpeed($route){
+    if (($route[count($route) - 1][2] - $route[0][2]) == 0) {
+        return 0;
+    }
+    return totalRouteDistance($route)  / ($route[count($route) - 1][2] - $route[0][2]);
+}
+
+function maxDeviation($route){
+    if (count($route) <= 1){
+        return 0;
+    }
+    $distance = 0;
+    for ($key = 0; $key < count($route); $key ++) {
+        for ($key2 = $key + 1; $key2 < count($route); $key2 ++) {
+            $p1 = $route[$key];
+            $p2 = $route[$key2];
+            $distance = max($distance, vincentyGreatCircleDistance($p1[0],$p1[1],$p2[0],$p2[1]));
+        }
+    }
+    return $distance;
 }
 
 if (!isset($_SESSION['username'])) {
