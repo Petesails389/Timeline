@@ -108,7 +108,7 @@ function GetMapPermissions($mapID,$userID){
     $result = $statement->execute()->fetchArray(SQLITE3_NUM);
     if($result == false){
         if( CheckMapOwner($mapID,$userID) != NULL){
-            return [true, true, strtotime(date("Y-m-d")), GetMapStartDate($mapID), true];
+            return [true, true, strtotime(date("Y-m-d"))+86400, GetMapStartDate($mapID), true];
         }
         return [0, 0, 0, 0, false];
     }
