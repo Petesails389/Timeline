@@ -88,6 +88,9 @@ function totalRouteDistance($route){
 }
 
 function averageRouteSpeed($route){
+    if (count($route) == 0) {
+        return 0;
+    }
     if (($route[count($route) - 1][2] - $route[0][2]) == 0) {
         return 0;
     }
