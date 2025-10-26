@@ -148,6 +148,17 @@ foreach ($routesSecondSplit as $route) {
     AddRoute($mapID, $route[0][2], $route[count($route)-1][2], $routeType);
 }
 
+// add future route if needed
+if ($day > strtotime(date("Y-m-d"))) {
+    $lastRoute = $routesSecondSplit[count($routesSecondSplit) - 1];
+    $lastPoint = $lastRoute[count($lastRoute) - 1];
+
+    $end = $lastPoint[2];
+    $future =  strtotime(date("Y-m-d")) + 604800;
+    
+    AddRoute($mapID, $end, $future, 0);
+}
+
 $num1 = count($routesFirstSplit);
 $num2 = count($routesSecondSplit);
 
