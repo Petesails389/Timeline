@@ -17,7 +17,7 @@ include "util.inc";
     crossorigin=""></script>
 <script src="leaflet-corridor.js?1"></script>
 <script src="leaflet.icon-material.js"></script>
-<script src="map.js?b13"></script>
+<script src="map.js?b14"></script>
 
 <style>
     .content {

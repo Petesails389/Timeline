@@ -211,6 +211,9 @@ function drawTimeline(routes, start, end) {
     var end = new Date((end)*1000 - timezoneOffset).toISOString().replace("T", " ");
 
     for (let i in routes) {
+        if (routes[i][0][2] == 0) {
+            continue;
+        }
         let start = new Date((routes[i][0][0])*1000 - timezoneOffset).toISOString().replace("T", " ");
         let end = new Date((routes[i][0][1])*1000 - timezoneOffset).toISOString().replace("T", " ");
 
