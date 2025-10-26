@@ -19,6 +19,7 @@ $db->exec("CREATE TABLE IF NOT EXISTS mapDataPoints (
     time INT NOT NULL,
     speed REAL,
     elevation REAL,
+    hiddenPoint BOOLEAN DEFAULT 0,
     PRIMARY KEY (mapID,time),
     FOREIGN KEY (mapID) REFERENCES maps(id) ON DELETE CASCADE
 );");
@@ -183,10 +184,49 @@ function ClearRoutes($mapID,$day = NULL, $duration=86400){
         $day = strtotime(date("Y-m-d"));
     }
     global $db;
+    //delete all routes in time range
     $statement = $db->prepare('DELETE FROM mapRoutes WHERE mapID = :mapID AND startTime >= :startTime AND startTime <= :endTime');
     $statement->bindValue(':mapID',$mapID);
     $statement->bindValue(':startTime',$day-$duration);
     $statement->bindValue(':endTime',$day);
+    $statement->execute();
+}
+
+function ClearPoints($mapID,$day = NULL, $duration=86400){
+    if ($day == NULL) {
+        $day = strtotime(date("Y-m-d"));
+    }
+    global $db;
+
+    // Unhide all points
+    $statement = $db->prepare('UPDATE mapDataPoints SET hiddenPoint = 0 WHERE mapID = :mapID AND time >= :startTime AND time <= :endTime');
+    $statement->bindValue(':mapID',$mapID);
+    $statement->bindValue(':startTime',$day-$duration);
+    $statement->bindValue(':endTime',$day);
+    return $statement->execute(); //force it to execute before continuing
+}
+
+//hide a single point
+function HidePoint($mapID, $time) {
+    global $db;
+    $statement = $db->prepare('UPDATE mapDataPoints SET hiddenPoint = 1 WHERE mapID = :mapID AND time = :time');
+    $statement->bindValue(':mapID',$mapID);
+    $statement->bindValue(':time',$time);
+    $statement->execute();
+}
+
+// hide multiple points in form [lat,lng,time] max 1000
+function HidePoints($mapID, $points) {
+    $placeHolders = implode(',', array_fill(0, count($points), '?'));
+    $sql = "UPDATE mapDataPoints SET hiddenPoint = 1 WHERE mapID = :mapID AND time IN ($placeHolders)";
+    global $db;
+    $statement = $db->prepare($sql);
+
+    foreach ($points as $index => $val){
+        $statement->bindValue($index+1,$val[2]);
+    }
+
+    $statement->bindValue(':mapID',$mapID);
     $statement->execute();
 }
 
@@ -195,7 +235,7 @@ function GetPoints($mapID,$day = NULL, $duration=86400){
         $day = strtotime(date("Y-m-d"));
     }
     global $db;
-    $statement = $db->prepare('SELECT lat,lng,time FROM mapDataPoints WHERE mapID = :mapID AND time >= :startTime AND time <= :endTime ORDER BY time');
+    $statement = $db->prepare('SELECT lat,lng,time FROM mapDataPoints WHERE mapID = :mapID AND hiddenPoint = 0 AND time >= :startTime AND time <= :endTime ORDER BY time');
     $statement->bindValue(':mapID',$mapID);
     $statement->bindValue(':startTime',$day-$duration);
     $statement->bindValue(':endTime',$day);

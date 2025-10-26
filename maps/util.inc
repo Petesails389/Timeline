@@ -112,6 +112,8 @@ function maxDeviation($route){
     return $distance;
 }
 
+$mapID = $_GET["mapID"];
+
 if (!isset($_SESSION['username'])) {
     $_SESSION["redirect"] = $_SERVER["PHP_SELF"] . "?" . $_SERVER['QUERY_STRING'];
     header("Location: ../accounts/login.php");
@@ -121,12 +123,12 @@ if ($_SERVER["REQUEST_METHOD"] != "GET"){
     header("Location: ../index.php");
     exit;
 }
-if (CheckMapID($_GET["mapID"]) == NULL){
+if (CheckMapID($mapID) == NULL){
     http_response_code(400);
     exit;
 }
-$permissions = GetMapPermissions($_GET["mapID"],GetUserID($_SESSION['username']));
-if (!GetMapPermission($_GET["mapID"],GetUserID($_SESSION['username']))){
+$permissions = GetMapPermissions($mapID,GetUserID($_SESSION['username']));
+if (!GetMapPermission($mapID,GetUserID($_SESSION['username']))){
     header("Location: ../index.php");
     exit;
 }
@@ -155,5 +157,5 @@ if (!$permissions[1]) {
 }
 
 //get markers
-$markers = GetMarkers($_GET["mapID"]);
+$markers = GetMarkers($mapID);
 ?>
