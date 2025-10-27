@@ -256,14 +256,11 @@ function drawTimeline(routes, start, end) {
     }
 
     var layout = {
-        title: {
-            text: 'Timeline - '.concat(dateText)
-        },
         margin: {
-            b: 20,
-            t: 45,
-            l: 25,
-            r: 10,
+            b: 8,
+            t: 8,
+            l: 23,
+            r: 8,
         },
         paper_bgcolor: "#fceaee",
         plot_bgcolor: "#fceaee",
