@@ -113,6 +113,7 @@ function GetMapPermissions($mapID,$userID){
         }
         return [0, 0, 0, 0, false];
     }
+    echo "sharedmap";
     return [$result[0]==1,$result[1]==1, $result[3], $result[2], false];
 }
 
@@ -286,7 +287,7 @@ function GetMapStartDate($mapID){
     $statement->bindValue(':mapID',$mapID);
     $result = $statement->execute()->fetchArray(SQLITE3_NUM);
     if($result == false){
-        return GetCenter($mapID);
+        return strtotime(date("Y-m-d"));
     }
     return $result[0];
 }
