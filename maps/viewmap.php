@@ -17,7 +17,7 @@ include "util.inc";
     crossorigin=""></script>
 <script src="leaflet-corridor.js?1"></script>
 <script src="leaflet.icon-material.js"></script>
-<script src="map.js?b14"></script>
+<script src="map.js?b18"></script>
 
 <style>
     .content {
@@ -82,11 +82,16 @@ function menu_close() {
 
 
 <!-- Timeline -->
-<div id="timeline" style="width: 100%; height: 50%; max-height: <?php if ($permissions[0]){echo"2";}?>00px;"></div>
+<div style="width: 100%; height: 50%; max-height: <?php if ($permissions[0]){echo"2";}?>00px; font-size: 0;">
+    <button class='w3-button w3-hover-theme' onclick="changeDate(-1)" style="display:inline-block; height: 100%; width:50px; vertical-align:top; padding:8px;">
+        <span class="material-symbols-outlined">chevron_left</span></button>
+    <div id="timeline" style="display:inline-block; height: 100%; width:calc(100% - 100px)" ></div>
+    <button class='w3-button w3-hover-theme' onclick="changeDate(1)" style="display:inline-block; height: 100%; width:50px; vertical-align:top; padding:8px;">
+        <span class="material-symbols-outlined">chevron_right</span></button>
 </div>
 
 <script>
-    drawMap()   
+    drawMap();
     //drawTimeline() 
 </script>
 

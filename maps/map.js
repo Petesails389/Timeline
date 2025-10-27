@@ -1,3 +1,11 @@
+function changeDate(val) {
+    var date = new Date(day.value);
+    date.setUTCDate(date.getUTCDate() + val);
+    document.getElementById("day").valueAsDate = date;
+
+    getData()
+}
+
 function getData() {
     //Change url & call data get
     var url = new URL(document.URL);
@@ -208,7 +216,16 @@ function drawTimeline(routes, start, end) {
 
     var timezoneOffset = new Date().getTimezoneOffset() * 60000;
     var start = new Date((start)*1000 - timezoneOffset).toISOString().replace("T", " ");
+    var date = new Date((end)*1000 - timezoneOffset - 86400000);
     var end = new Date((end)*1000 - timezoneOffset).toISOString().replace("T", " ");
+
+    const options = {
+        weekday: "long",
+        year: "numeric",
+        month: "long",
+        day: "numeric",
+    };
+    var dateText = date.toLocaleDateString(undefined, options);
 
     for (let i in routes) {
         if (routes[i][0][2] == 0) {
@@ -237,11 +254,10 @@ function drawTimeline(routes, start, end) {
         };
         data.push(trace);
     }
-    console.log(data);
 
     var layout = {
         title: {
-            text: 'Timeline'
+            text: 'Timeline - '.concat(dateText)
         },
         margin: {
             b: 20,
