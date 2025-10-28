@@ -1,13 +1,10 @@
 <?php
-include "mapsdb.php";
+include "util.inc";
+include "mapinfo.inc";
 include "../head.php";
 ?>
 
 <script src="plotly-3.1.0.min.js" charset="utf-8"></script>
-
-<?php
-include "util.inc";
-?>
 
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
     integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="

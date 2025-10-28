@@ -77,6 +77,19 @@ function CheckMapID($mapID){
     return $result[0];
 }
 
+function GetAllMapIDs(){
+    global $db;
+    $statement = $db->prepare('SELECT id FROM maps');
+    $result = $statement->execute();
+    $results = [];
+    $next = $result->fetchArray(SQLITE3_NUM);
+    while ($next != false) {
+        array_push($results, $next[0]);
+        $next = $result->fetchArray(SQLITE3_NUM);
+    }
+    return $results;
+}
+
 function GetMapName($mapID){
     global $db;
     $statement = $db->prepare('SELECT mapName FROM maps WHERE id = :mapID');

@@ -1,8 +1,9 @@
 <?php
-include "mapsdb.php";
 include "../head.php";
 include "../header.php";
 include "util.inc";
+include "mapinfo.inc";
+
 
 if (!$permissions[4]){
     header("Location: index.php");

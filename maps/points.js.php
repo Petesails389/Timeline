@@ -1,10 +1,7 @@
 <?php
 header('Content-Type: text/javascript');
-session_start();
-session_reset();
-include "../accounts/db.php";
-include "mapsdb.php";
 include "util.inc";
+include "mapinfo.inc";
 
 //map info
 $mapID = $_GET["mapID"];
