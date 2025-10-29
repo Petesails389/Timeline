@@ -1,3 +1,5 @@
 accounts/db.sqlite
 accounts/php_errors.log
 php_errors.log
+
+maps/ProcessingResults.txt
