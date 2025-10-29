@@ -208,6 +208,10 @@ function reprocessPoints($mapID, $day, $duration){
     //get points
     $points = GetPoints($mapID, $day, $duration);
 
+    if(count($points) < 2){
+        return "Not enough points to process";
+    }
+
     //hide points that are too close together
     HidePoints($mapID, HideBy2minDistance($points));
 
