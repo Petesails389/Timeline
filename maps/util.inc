@@ -192,7 +192,8 @@ function HideBy2minDistance($points, $threshold = [170, 60]) {
     return $final;
 }
 
-function reprocessPoints($mapID, $day, $duration){
+//reporcesses points and returns in html (with <br>) or plain text (with \n)
+function reprocessPoints($mapID, $day, $duration, $html = True){
     //adjust duration based on routes in time specified
     $routes = GetRoutes($mapID, $day, $duration);
     if (count($routes) > 0){
@@ -209,7 +210,11 @@ function reprocessPoints($mapID, $day, $duration){
     $points = GetPoints($mapID, $day, $duration);
 
     if(count($points) < 2){
-        return "Not enough points to process";
+        if ($html){
+            return "Not enough points to process<br>";
+        } else {
+            return "Not enough points to process\n";
+        }
     }
 
     //hide points that are too close together
@@ -263,7 +268,11 @@ function reprocessPoints($mapID, $day, $duration){
     $num1 = count($routesFirstSplit);
     $num2 = count($routesSecondSplit);
 
-    return "Split into $num1 route(s) FIRST!<br>Split into $num2 route(s) SECOND!<br>";
+    if ($html){
+        return "Split into $num1 route(s) FIRST!<br>Split into $num2 route(s) SECOND!<br>";
+    } else {
+        return "Split into $num1 route(s) FIRST!\nSplit into $num2 route(s) SECOND!\n";
+    }
 }
 
 session_start();
