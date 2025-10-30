@@ -10,8 +10,19 @@ function getData() {
     //Change url & call data get
     var url = new URL(document.URL);
 
-    var day = document.getElementById("day").value;
-    var duration = document.getElementById("duration").value;
+    //attempt to get day and duration request from user and apply defaults if not
+    var day = document.getElementById("day");
+    if (day) {
+        day = day.value;
+    } else {
+        day = new Date().valueOf() / 1000;
+    }
+    var duration = document.getElementById("duration");
+    if (duration) {
+        duration = duration.value;
+    } else {
+        duration = 86400;
+    }
 
     url.searchParams.set('day', day);
     url.searchParams.set('duration', duration);
@@ -63,7 +74,7 @@ function processData(jsonIn) {
 
     //draw points
     if (json.routes && json.routes.length > 0) {
-        drawRoutes(json.routes, json.duration > 604800);
+        drawRoutes(json.routes, json.duration > 604800 || json.history);
     } else {
         if (json.last) {
             map.flyTo(json.last, 15, {
