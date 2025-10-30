@@ -58,9 +58,10 @@ function menu_close() {
  <!-- display map -->
 <div id='map' style='height: 100%; margin: 0px;'></div>
 
-
+<?php
+if ($permissions[0]) {?>
 <!-- Timeline -->
-<div style="width: 100%; height: 50%; max-height: <?php if ($permissions[0]){echo"2";}?>00px; font-size: 0;">
+<div style="width: 100%; height: 50%; max-height: 200px; font-size: 0;">
     <button class='w3-button w3-hover-theme' onclick="changeDate(-1)" style="display:inline-block; height: 100%; width:50px; vertical-align:top; padding:8px;">
         <span class="material-symbols-outlined">chevron_left</span>
     </button>
@@ -84,6 +85,8 @@ function menu_close() {
         <span class="material-symbols-outlined">chevron_right</span>
     </button>
 </div>
+<?php
+}?>
 
 <script>
     drawMap();

@@ -126,7 +126,6 @@ function GetMapPermissions($mapID,$userID){
         }
         return [0, 0, 0, 0, false];
     }
-    echo "sharedmap";
     return [$result[0]==1,$result[1]==1, $result[3], $result[2], false];
 }
 
