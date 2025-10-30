@@ -1,8 +1,8 @@
 <?php
-include "../head.php";
-include "../header.php";
 include "util.inc";
 include "mapinfo.inc";
+include "../head.php";
+include "../header.php";
 
 
 if (!$permissions[4]){
