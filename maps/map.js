@@ -99,7 +99,11 @@ function processData(jsonIn) {
     //display the layers in the right order
     map.addLayer(routesLayer);
     map.addLayer(highlightLayer);
-    map.addLayer(markers);
+    if (json.duration > 604800 || !json.history) { 
+        map.removeLayer(markers);
+    } else {
+        map.addLayer(markers);
+    }
 }
 
 function drawRoutes(routes, heatmap) {
