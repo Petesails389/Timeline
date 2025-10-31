@@ -74,7 +74,7 @@ function processData(jsonIn) {
 
     //draw points
     if (json.routes && json.routes.length > 0) {
-        drawRoutes(json.routes, json.duration > 604800 || json.history);
+        drawRoutes(json.routes, json.duration > 604800 || !json.history);
     } else {
         if (json.last) {
             map.flyTo(json.last, 15, {
