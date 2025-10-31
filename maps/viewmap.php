@@ -12,9 +12,9 @@ include "../head.php";
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
     integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
     crossorigin=""></script>
-<script src="leaflet-corridor.js?1"></script>
+<script src="leaflet-corridor.js"></script>
 <script src="leaflet.icon-material.js"></script>
-<script src="map.js?b18"></script>
+<script src="map.js"></script>
 
 <style>
     .content {
