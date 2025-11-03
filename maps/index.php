@@ -9,6 +9,10 @@ if(isset($_GET["focus"])){
     $focus = $_GET["focus"];
 }
 
+if ($focus != "Shared" && $focus != "Owned") {
+    $focus = "About";
+}
+
 ?>
 
 <h1 class="w3-monospace"> Welcome to maps!</h1>
@@ -30,8 +34,7 @@ if(isset($_GET["focus"])){
     <div>
     <?php
     if (!isset($_SESSION['username'])) {
-        $_SESSION["redirect"] = "/maps";
-        echo "<p><a href='/accounts/login.php'>Login<a> to see Your maps!</p>";
+        echo "<p><a href='/accounts/login.php?redirect=/maps/?focus=Owned'>Login<a> to see Your maps!</p>";
     }
     else {
         $maps = GetMaps(GetUserID($_SESSION['username']));
@@ -60,8 +63,7 @@ if(isset($_GET["focus"])){
     <div>
     <?php
     if (!isset($_SESSION['username'])) {
-        $_SESSION["redirect"] = "/maps";
-        echo "<p><a href='/accounts/login.php'>Login<a> to see Your maps!</p>";
+        echo "<p><a href='/accounts/login.php?redirect=/maps/?focus=Shared'>Login<a> to see Your maps!</p>";
     } else {
         $mapsShared = GetShared(GetUserID($_SESSION['username']));
         $map = $mapsShared->fetchArray(SQLITE3_NUM);

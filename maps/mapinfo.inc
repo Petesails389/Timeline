@@ -2,8 +2,8 @@
 $mapID = $_GET["mapID"];
 
 if (!isset($_SESSION['username'])) {
-    $_SESSION["redirect"] = $_SERVER["PHP_SELF"] . "?" . $_SERVER['QUERY_STRING'];
-    header("Location: ../accounts/login.php");
+    $redirect = $_SERVER["PHP_SELF"] . "?" . $_SERVER['QUERY_STRING'];
+    header("Location: ../accounts/login.php?redirect=$redirect");
     exit;
 }
 if ($_SERVER["REQUEST_METHOD"] != "GET"){
