@@ -40,6 +40,17 @@ function bearing($p1, $p2){
     return getRhumbLineBearing($p1[0],$p1[1],$p2[0],$p2[1]);
 }
 
+// returns an angle between -180 and 180
+function angleNormalise($angle){
+    while ($angle < -180) {
+        $angle = $angle + 360;
+    }
+    while ($angle > 180) {
+        $angle = $angle - 360;
+    }
+    return $angle;
+}
+
 function totalRouteRotation($route){
     if (count($route) <= 2) {
         return 0;
@@ -49,17 +60,23 @@ function totalRouteRotation($route){
     for ($key = 2; $key < count($route); $key ++) {
         $bearing = bearing($route[$key -1], $route[$key]);
         $difference = $lastbearing-$bearing;
-        if ($difference < -180) {
-            $difference = $difference + 360;
-        }
-        if ($difference > 180) {
-            $difference = $difference - 360;
-        }
+        $diiference = angleNormalise($difference);
         $totalRotation += $difference;
         $lastbearing = $bearing;
     }
 
     return $totalRotation;
+}
+
+function angularSpeed($p1, $p2, $p3){
+    if ($p1[2] - $p3[2] == 0) {
+        return 0;
+    }
+
+    $a1 = angleNormalise(bearing($p1, $p2));
+    $a2 = angleNormalise(bearing($p2, $p3));
+
+    return  ($a1 - $a2) / abs($p1[2] - $p3[2]); 
 }
 
 function distance($p1, $p2){
@@ -111,6 +128,74 @@ function maxDeviation($route){
     }
     return $distance;
 }
+
+// function to check if point q lies on line segment 'pr'
+function onSegment($p, $q, $r){
+    return ($q[0] <= max($p[0], $r[0]) && $q[0] >= min($p[0], $r[0]) && $q[1] <= max($p[1], $r[1]) && $q[1] >= min($p[1], $r[1]));
+}
+
+// function to find orientation of ordered triplet (p, q, r)
+// 0 --> p, q and r are collinear
+// 1 --> Clockwise
+// 2 --> Counterclockwise
+function orientation($p, $q, $r){
+    $val = ($q[1] - $p[1]) * ($r[0] - $q[0]) - ($q[0] - $p[0]) * ($r[1] - $q[1]);
+
+    # collinear
+    if ($val == 0){
+        return 0;
+    }
+
+    # clock or counterclock wise
+    # 1 for clockwise, 2 for counterclockwise
+    if (val > 0) {return 1; } else {return 2;}
+}
+
+
+# function to check if two line segments intersect
+function doIntersect($points){
+    # find the four orientations needed
+    # for general and special cases
+    $o1 = orientation($points[0][0], $points[0][1], $points[1][0]);
+    $o2 = orientation($points[0][0], $points[0][1], $points[1][1]);
+    $o3 = orientation($points[1][0], $points[1][1], $points[0][0]);
+    $o4 = orientation($points[1][0], $points[1][1], $points[0][1]);
+
+    # general case
+    if ($o1 != $o2 && $o3 != $o4){
+        return True;
+    }
+
+    # special cases
+    # p1, q1 and p2 are collinear and p2 lies on segment p1q1
+    if ($o1 == 0 && onSegment($points[0][0], $points[1][0], $points[0][1])){
+        return True;
+    }
+
+    # p1, q1 and q2 are collinear and q2 lies on segment p1q1
+    if ($o2 == 0 && onSegment($point[0][0], $point[1][1], $point[0][1])){
+        return True;
+    }
+
+    # p2, q2 and p1 are collinear and p1 lies on segment p2q2
+    if ($o3 == 0 && onSegment($point[1][0], $point[0][0], $point[1][1])){
+        return True;
+    }
+
+    # p2, q2 and q1 are collinear and q1 lies on segment p2q2 
+    if ($o4 == 0 && onSegment($point[1][0], $point[0][1], $point[1][1])){
+        return True;
+    }
+
+    return False;
+
+}
+
+// $points = [[[1, 1], [10, 1]], [[1, 2], [10, 2]]]
+//     if doIntersect($points):
+//         print("Yes")
+//     else:
+//         print("No")
 
 # forms a set of routes by splitting when current speed drops below threshold
 function SplitByCurrentSpeed($points, $threshold = 0.15) {
