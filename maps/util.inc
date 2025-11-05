@@ -344,10 +344,10 @@ function reprocessPoints($mapID, $day, $duration, $html = True){
         $lastRoute = $routesSecondSplit[count($routesSecondSplit) - 1];
         $lastPoint = $lastRoute[count($lastRoute) - 1];
 
-        $end = $lastPoint[2];
+        $now = time();
         $future =  strtotime(date("Y-m-d")) + 604800;
         
-        AddRoute($mapID, $end, $future, 0);
+        AddRoute($mapID, $now, $future, 0);
     }
 
     $num1 = count($routesFirstSplit);
