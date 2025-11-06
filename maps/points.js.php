@@ -43,6 +43,7 @@ $result = array(
     "day"=>$day,
     "duration"=>$duration,
     "routes"=>$finalRoutes,
+    "home"=>GetCenter($mapID)
 );
 if ($permissions[0]){$result["markers"] = $markers;}
 if ($permissions[1]){$result["last"] = $last;}
