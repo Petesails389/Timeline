@@ -125,26 +125,17 @@ function drawRoutes(routes, heatmap) {
         }
     }
 
-    // //add points to heatmap
-    // for (let i in displayPoints){
-    //     //L.circle([displayPoints[i][0],displayPoints[i][1]], {radius: 0.5, fillColor: '#f34723', fillOpacity: 1, color: '#f34723', weight: 1}).addTo(highlightLayer);
-    //     //L.circleMarker([displayPoints[i][0],displayPoints[i][1]], {radius: 1, fillColor: '#7DF9FF', fillOpacity: 0.1, stroke: false}).addTo(routesLayer);
-    // }
-
     //fit bounds
     bounds = L.latLngBounds(routes[0][1]);
     for (let key = 1; key < routes.length; key ++) {
         bounds.extend(routes[key][1])
     }
-    map.fitBounds(bounds, {
-        animate: true,
-        duration: 1
-    });
+    map.fitBounds(bounds);
 }
 
 //draws routes in time range
 function highlight(start, end) {
-    var localBounds = L.latLngBounds();
+    localBounds = L.latLngBounds();
     for (let i in json.routes){
         var routeStart = json.routes[i][0][0];
         var routeEnd = json.routes[i][0][1];
@@ -157,10 +148,9 @@ function highlight(start, end) {
         }
     }
     //fit bounds
-    // map.fitBounds(localBounds, {
-    //     animate: true,
-    //     duration: 1
-    // });
+    map.flyToBounds(localBounds, {
+        duration: 0.8
+    });
 }
 
 function drawMap() {
@@ -219,6 +209,74 @@ function drawMap() {
     };
 
     var layerControl = L.control.layers(baseMaps, overlayLayers, {position: 'bottomleft'}).addTo(map);
+
+    // more zoom and position controls
+    L.Control.extraZoomControls = L.Control.extend({
+        options: {
+            position: 'topleft',
+            boundsZoomText: '<span class="material-symbols-outlined" style="padding-top: 2px;padding-left: 1px;">zoom_out_map</span>',
+            boundsZoomTitle: 'Go To Bounds',
+            homeZoomText: '<span class="material-symbols-outlined" style="padding-top: 2px;padding-left: 1px;">home</span>',
+            homeZoomTitle: 'Go To Home',
+            locationZoomText: '<span class="material-symbols-outlined" style="padding-top: 2px;padding-left: 1px;">my_location</span>',
+            locationZoomTitle: 'Current Location'
+        },
+
+        onAdd: function (map) {
+            var controlName = 'extra-zoom-control',
+                container = L.DomUtil.create('div', controlName + ' leaflet-bar'),
+                options = this.options;
+
+            this._boundsZoomButton = this._createButton(options.boundsZoomText, options.boundsZoomTitle, controlName + "-bounds", container, this._boundsZoom);
+            this._homeZoomButton = this._createButton(options.homeZoomText, options.homeZoomTitle, controlName + "-home", container, this._homeZoom);
+            this._locationZoomButton = this._createButton(options.locationZoomText, options.locationZoomTitle, controlName + "-location", container, this._locationZoom);
+
+            this._map = map;
+
+            return container;
+        },
+
+        _boundsZoom: function (e) {
+            this._map.flyToBounds(bounds, {
+                duration: 0.8
+            });
+        },
+
+        _homeZoom: function (e) {
+            if (json.home) {
+                this._map.flyTo(json.home, 15, {
+                    duration: 0.8
+                });
+            }
+        },
+
+        _locationZoom: function (e) {
+            if (json.last) {
+                this._map.flyTo(json.last, 17, {
+                    duration: 0.8
+                });
+            }
+        },
+
+        _createButton: function (html, title, className, container, fn) {
+            var link = L.DomUtil.create('a', className, container);
+            link.innerHTML = html;
+            link.href = '#';
+            link.title = title;
+
+            L.DomEvent.on(link, 'mousedown dblclick', L.DomEvent.stopPropagation)
+                .on(link, 'click', L.DomEvent.stop)
+                .on(link, 'click', fn, this)
+                .on(link, 'click', this._refocusOnMap, this);
+
+            return link;
+        }
+    });
+
+    // add the controls to the map
+    var zoomControls = new L.Control.extraZoomControls();
+    zoomControls.addTo(map);
+
 
     getData()
 }
@@ -310,12 +368,6 @@ function drawTimeline(routes, start, end) {
                 return;
             }
         }
-
-        //zoom to heatmap
-        map.fitBounds(bounds, {
-            animate: true,
-            duration: 1
-        });
     });
 }
 
@@ -323,7 +375,8 @@ function drawTimeline(routes, start, end) {
 var map;
 var json;
 var bounds;
-var globalDuration
+var localBounds;
+var globalDuration;
 
 //overlay layers
 var highlightLayer =  L.layerGroup("");
