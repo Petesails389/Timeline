@@ -99,6 +99,7 @@ input {
   position: absolute;
   z-index: 1;
   width: max-content;
+  max-width: 200px;
 }
 
 /* Show the tooltip text when you mouse over the tooltip container */
@@ -108,8 +109,8 @@ input {
 }
 
  .tooltip .tooltiptext {
-  top: -5px;
-  left: 110%;
+  bottom: 24px;
+  left: -4px;
 }
 
 .bingo-inner {
