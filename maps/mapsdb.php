@@ -7,13 +7,15 @@ $db->exec("CREATE TABLE IF NOT EXISTS maps (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     ownerID INTEGER, 
     mapName TEXT(256),
+    centerLat REAL NOT NULL DEFAULT 0,
+    centerLng REAL NOT NULL DEFAULT 0,
     FOREIGN KEY (ownerID) REFERENCES users(id) ON DELETE CASCADE
 );");
 #$db->exec('INSERT OR IGNORE INTO maps (id, ownerID, mapName) VALUES (1, 1,"Peter\'s Map")');
 
 #$db->exec('DROP TABLE IF EXISTS mapDataPoints');
 $db->exec("CREATE TABLE IF NOT EXISTS mapDataPoints (
-    mapID INTEGER, 
+    mapID INTEGER NOT NULL, 
     lat REAL NOT NULL,
     lng REAL NOT NULL,
     time INT NOT NULL,
@@ -33,7 +35,7 @@ $db->exec("CREATE TABLE IF NOT EXISTS mapDataPoints (
 
 #$db->exec('DROP TABLE IF EXISTS mapRoutes');
 $db->exec("CREATE TABLE IF NOT EXISTS mapRoutes (
-    mapID INTEGER,
+    mapID INTEGER NOT NULL,
     startTime INT NOT NULL,
     endTime INT NOT NULL,
     routeType INT DEFAULT 0,
