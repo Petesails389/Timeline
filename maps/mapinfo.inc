@@ -11,7 +11,7 @@ if ($_SERVER["REQUEST_METHOD"] != "GET"){
     exit;
 }
 if (CheckMapID($mapID) == NULL){
-    http_response_code(400);
+    http_response_code(404);
     exit;
 }
 $permissions = GetMapPermissions($mapID,GetUserID($_SESSION['username']));
