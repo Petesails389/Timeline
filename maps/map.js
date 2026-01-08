@@ -1,6 +1,7 @@
 function changeDate(val) {
     var date = new Date(day.value);
     date.setUTCDate(date.getUTCDate() + val);
+    date = new Date(Math.min(date.valueOf(), Date.now()));
     document.getElementById("day").valueAsDate = date;
 
     getData()
