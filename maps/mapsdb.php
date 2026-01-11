@@ -171,7 +171,7 @@ function GetCenter($mapID){
     return $result;
 }
 
-function AddPoint($mapID, $lat, $lng, $time, $speed = NULL, $elevation = NULL, $mapType = 0) {
+function AddPoint($mapID, $lat, $lng, $time, $speed = NULL, $elevation = NULL) {
     global $db;
     $statement = $db->prepare('INSERT OR REPLACE INTO mapDataPoints (mapID, lat, lng, time, speed, elevation) VALUES (:mapID, :lat, :lng, :time, :speed, :elevation)');
     $statement->bindValue(':mapID',$mapID);
@@ -180,8 +180,24 @@ function AddPoint($mapID, $lat, $lng, $time, $speed = NULL, $elevation = NULL, $
     $statement->bindValue(':time',$time);
     $statement->bindValue(':speed',$speed);
     $statement->bindValue(':elevation',$elevation);
-    $statement->bindValue(':mapType',$mapType);
     $statement->execute();
+}
+
+function AddPoints($mapID, $points) {
+    global $db;
+    while (count($points) > 0) {
+        $sql = "INSERT OR REPLACE INTO mapDataPoints (mapID, lat, lng, time, speed, elevation) VALUES ";
+        $pointsText = [];
+        //limit to 10000 entries so we don't run into SQLite SQL query length limit
+        for ($i = 0; $i < min(10000,count($points)); $i++){
+            $point = array_pop($points);
+            array_push($pointsText, "($mapID, $point[0], $point[1], $point[2], ".($point[3] ?? "NULL").", ".($point[4] ?? "NULL").")");
+        }
+
+        $sql = $sql.(implode(',', $pointsText)).";";
+        $statement = $db->prepare($sql);
+        $statement->execute();
+    }
 }
 
 function AddRoute($mapID, $startTime, $endTime, $routeType = 0) {

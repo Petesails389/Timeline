@@ -34,6 +34,12 @@ $shares = GetShares($mapID);
 </div>
 
 <div id="Settings" class="tab w3-card w3-padding" <?php if ($focus != "Settings") { echo "style='display: none;'";}?>>
+    <h4>Manually add route (GPX):</h4>
+    <form action="/maps/gpxin.php" method="post" enctype="multipart/form-data">
+        <input type='hidden' name='mapID' value='<?php echo $mapID; ?>'>
+        <input type="file" name="gpx" size="25" /><br><br>
+	    <input class="w3-button w3-theme w3-hover-theme" type="submit" name="submit" value="Upload" />
+    </form>
 </div>
 
 
@@ -96,7 +102,7 @@ $shares = GetShares($mapID);
 
 
 
-<div style="padding: 16px;  <?php if ($focus != "Markers") { echo "display: none;";}?>" id="Shares" class="tab w3-card">
+<div style="padding: 16px;  <?php if ($focus != "Shares") { echo "display: none;";}?>" id="Shares" class="tab w3-card">
 
     <div class="w3-grid" style="gap:16px; grid-template-columns:repeat(auto-fill,minmax(240px,1fr))">
     <?php 
