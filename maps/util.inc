@@ -320,6 +320,10 @@ function reprocessPoints($mapID, $day, $duration, $html = True){
 
     //asign probable activity types to each route and add to DB
     foreach ($routesSecondSplit as $route) {
+        //filter out small routes
+        if (totalRouteDistance($route) < 100){
+            continue;
+        }
         $averagespeed = averageRouteSpeed($route);
         $routeType = 0;
         switch (true) {
