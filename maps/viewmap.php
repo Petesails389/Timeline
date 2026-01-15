@@ -62,11 +62,15 @@ function menu_close() {
 if ($permissions[0]) {?>
 <!-- Timeline -->
 <div style="width: 100%; height: 50%; max-height: 200px; font-size: 0;">
-    <button class='w3-button w3-hover-theme' onclick="changeDate(-1)" style="display:inline-block; height: 100%; width:50px; vertical-align:top; padding:8px;">
-        <span class="material-symbols-outlined">chevron_left</span>
-    </button>
-    <div style="display: inline-block; height: 100%; width:calc(100% - 100px)">
-        <form style ="width: 100%; font-size: medium; height: 55px;">
+    <div style="display:inline-block; height: 100%; width:56px; vertical-align:top;">
+        <div style="height: 56px;">
+        </div>
+        <button class='w3-button w3-hover-theme' onclick="changeDate(-1)" style="height: calc(100% - 56px);">
+            <span class="material-symbols-outlined">chevron_left</span>
+        </button>
+    </div>
+    <div style="display: inline-block; height: 100%; width:calc(100% - 112px)">
+        <form style ="width: 100%; font-size: medium; height: 56px;">
             <h4 style="text-align: center; margin: 0px;">Timeline:</h4>
             <div style="margin: auto; width: fit-content;">
                 <input onChange="getData()" name="day" id="day" type="date" value="<?php echo Date("Y-m-d",$day-86400);?>">
@@ -79,11 +83,16 @@ if ($permissions[0]) {?>
                 </select>
             </div>
         </form>
-        <div id="timeline" style="display:inline-block; height: calc(100% - 55px); width:100%;" ></div>
+        <div id="timeline" style="display:inline-block; height: calc(100% - 56px); width:100%;" ></div>
     </div>
-    <button class='w3-button w3-hover-theme' onclick="changeDate(1)" style="display:inline-block; height: 100%; width:50px; vertical-align:top; padding:8px;">
-        <span class="material-symbols-outlined">chevron_right</span>
-    </button>
+    <div style="display:inline-block; height: 100%; width:56px; vertical-align:top;">
+        <button class='w3-button w3-hover-theme' onclick="getData()" style="height: 56px;">
+            <span class="material-symbols-outlined">refresh</span>
+        </button>
+        <button class='w3-button w3-hover-theme' onclick="changeDate(1)" style="height: calc(100% - 56px);">
+            <span class="material-symbols-outlined">chevron_right</span>
+        </button>
+    </div>
 </div>
 <?php
 }?>
