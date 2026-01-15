@@ -340,6 +340,10 @@ function reprocessPoints($mapID, $day, $duration, $html = True){
                 $routeType = 4;
                 break;
         }
+        //offline routes
+        if (($route[count($route)-1][2] - $route[0][2]) / count($route) <  60){
+            $routeType = 5;
+        }
         AddRoute($mapID, $route[0][2], $route[count($route)-1][2], $routeType);
     }
 

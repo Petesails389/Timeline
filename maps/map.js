@@ -285,8 +285,8 @@ function drawMap() {
 function drawTimeline(routes, start, end) {
     timeline = document.getElementById('timeline');
 
-    var x = [[],[],[],[],[]];
-    var y = [[],[],[],[],[]];
+    var x = [[],[],[],[],[],[]];
+    var y = [[],[],[],[],[],[]];
 
     var timezoneOffset = new Date().getTimezoneOffset() * 60000;
     var start = new Date((start)*1000 - timezoneOffset).toISOString().replace("T", " ");
@@ -303,10 +303,10 @@ function drawTimeline(routes, start, end) {
         y[routes[i][0][2]].push(-0.5,1.5,1.5,-0.5);
     }
 
-    var colors = ['#000000','#ae1919ff','#be6c19ff','#e0d20aff','#48d013ff'];
+    var colors = ['#000000','#ae1919ff','#be6c19ff','#e0d20aff','#48d013ff','#000000'];
     var data = [];
 
-    for (let i = 0; i < 5; i++) {
+    for (let i = 0; i < 6; i++) {
         var trace = {
             x: x[i],
             y: y[i],

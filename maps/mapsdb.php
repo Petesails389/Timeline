@@ -32,6 +32,7 @@ $db->exec("CREATE TABLE IF NOT EXISTS mapDataPoints (
 // 1 - cycling
 // 3 - driving
 // 4 - fast (train/plane?)
+// 5 - OFFLINE (route with too few points per-time to be used in many cases)
 
 #$db->exec('DROP TABLE IF EXISTS mapRoutes');
 $db->exec("CREATE TABLE IF NOT EXISTS mapRoutes (
