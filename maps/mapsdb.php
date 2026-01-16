@@ -1,5 +1,5 @@
 <?php
-$db = new SQLite3('/var/www//html/accounts/db.sqlite', SQLITE3_OPEN_CREATE | SQLITE3_OPEN_READWRITE);
+$db = new SQLite3('/var/www/data/db.sqlite', SQLITE3_OPEN_CREATE | SQLITE3_OPEN_READWRITE);
 $db->exec("PRAGMA foreign_keys = ON;");
 
 #$db->exec('DROP TABLE IF EXISTS maps');

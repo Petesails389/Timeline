@@ -1,5 +1,5 @@
 <?php
-$db = new SQLite3('/var/www//html/accounts/db.sqlite', SQLITE3_OPEN_CREATE | SQLITE3_OPEN_READWRITE);
+$db = new SQLite3('/var/www/data/db.sqlite', SQLITE3_OPEN_CREATE | SQLITE3_OPEN_READWRITE);
 
 $db->query('CREATE TABLE IF NOT EXISTS "users" (
     "id" INTEGER PRIMARY KEY,

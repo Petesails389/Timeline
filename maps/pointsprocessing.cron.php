@@ -17,7 +17,7 @@ $day = strtotime(date("Y-m-d"));
 $duration = 172800;
 
 //get output file 
-$file = 'ProcessingResults.txt';
+$file = '/var/www/log/ProcessingResults.txt';
 $current = file_get_contents($file);
 $current .= date("Y-m-d")."\n";
 
@@ -28,5 +28,5 @@ foreach ($maps as $mapID) {
 }
 
 // Write the contents back to the file
-file_put_contents($file, $current);
+file_put_contents($file, $current); 
 ?>
