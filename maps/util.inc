@@ -148,7 +148,7 @@ function orientation($p, $q, $r){
 
     # clock or counterclock wise
     # 1 for clockwise, 2 for counterclockwise
-    if (val > 0) {return 1; } else {return 2;}
+    if ($val > 0) {return 1; } else {return 2;}
 }
 
 
@@ -173,17 +173,17 @@ function doIntersect($points){
     }
 
     # p1, q1 and q2 are collinear and q2 lies on segment p1q1
-    if ($o2 == 0 && onSegment($point[0][0], $point[1][1], $point[0][1])){
+    if ($o2 == 0 && onSegment($points[0][0], $points[1][1], $points[0][1])){
         return True;
     }
 
     # p2, q2 and p1 are collinear and p1 lies on segment p2q2
-    if ($o3 == 0 && onSegment($point[1][0], $point[0][0], $point[1][1])){
+    if ($o3 == 0 && onSegment($points[1][0], $points[0][0], $points[1][1])){
         return True;
     }
 
     # p2, q2 and q1 are collinear and q1 lies on segment p2q2 
-    if ($o4 == 0 && onSegment($point[1][0], $point[0][1], $point[1][1])){
+    if ($o4 == 0 && onSegment($points[1][0], $points[0][1], $points[1][1])){
         return True;
     }
 
@@ -250,6 +250,23 @@ function SplitByRotation($points, $rotaionFactor = 3){
     return $routes;
 }
 
+function SplitByGaps($points, $time = 900, $distance = 1000) {
+    $routes = [];
+    $route = [];
+
+    for ($key = 1; $key < count($points); $key ++) {
+        $timeJump = abs($points[$key][2] - $points[$key -1][2]);
+        $distanceJump = distance($points[$key],$points[$key -1]);
+        if ($timeJump < $time && $distanceJump < $distance){
+            array_push($route,[$points[$key][0],$points[$key][1],$points[$key][2]]);
+        } else {
+            array_push($routes,$route);
+            $route = [];
+        }
+    }
+    return $routes;
+}
+
 # HidePoints by how far has been traveled in 2 min
 function HideBy2minDistance($points, $threshold = [170, 60]) {
     $final = [];
@@ -308,14 +325,19 @@ function reprocessPoints($mapID, $day, $duration, $html = True){
     //get points again
     $points = GetPoints($mapID, $day, $duration);
 
-    //initial split
+    //initial splits
     $routesFirstSplit = SplitByCurrentSpeed($points);
 
     //second split
     $routesSecondSplit = [];
     foreach ($routesFirstSplit as $route){
         $routesSecondSplit = array_merge($routesSecondSplit, SplitByRotation($route));
+    }
 
+    //third split
+    $routesThirdSplit = [];
+    foreach ($routesSecondSplit as $route){
+        $routesThirdSplit = array_merge($routesThirdSplit, SplitByGaps($route));
     }
 
     //asign probable activity types to each route and add to DB
@@ -341,8 +363,8 @@ function reprocessPoints($mapID, $day, $duration, $html = True){
                 break;
         }
         //offline routes
-        if (($route[count($route)-1][2] - $route[0][2]) / count($route) <  60){
-            $routeType = 5;
+        if (($route[0][2] - $route[count($route)-1][2]) / count($route) >  30){
+            //$routeType = 5;
         }
         AddRoute($mapID, $route[0][2], $route[count($route)-1][2], $routeType);
     }
@@ -360,11 +382,12 @@ function reprocessPoints($mapID, $day, $duration, $html = True){
 
     $num1 = count($routesFirstSplit);
     $num2 = count($routesSecondSplit);
+    $num3 = count($routesThirdSplit);
 
     if ($html){
-        return "Split into $num1 route(s) FIRST!<br>Split into $num2 route(s) SECOND!<br>";
+        return "Split into $num1 route(s) FIRST!<br>Split into $num2 route(s) SECOND!<br>Split into $num3 route(s) THIRD!<br>";
     } else {
-        return "Split into $num1 route(s) FIRST!\nSplit into $num2 route(s) SECOND!\n";
+        return "Split into $num1 route(s) FIRST!\nSplit into $num2 route(s) SECOND!\nSplit into $num3 route(s) THIRD!\n";
     }
 }
 
