@@ -45,9 +45,21 @@ function menu_close() {
 <div style='position: relative;'>
     <div class='w3-bar w3-theme-d1' style='position: absolute; top: 0px; right: 0px; width: fit-content; z-index: 1000; margin: 10px;'>
             <div class="w3-hide-small w3-bar-item w3 right" style="padding: 0px; width: 344px;">
-                <h5 id='title' style='padding: 10px; margin: 0px;' class='w3-theme-d1'>Map</h5>
+                <h4 id='title' style='padding: 10px; margin: 0px;' class='w3-theme-d1'>Map</h4>
             </div>
-            <a class='w3-bar-item w3-button w3-hover-theme w3-right' href='settings.php?mapID=<?php echo $_GET["mapID"]; ?>'>
+            <a class='w3-hide-small w3-bar-item w3-button w3-hover-theme w3-right' onclick="menu_close()" id="menuButton">
+                <span class='material-symbols-outlined w3-display-center'>close</span>
+            </a>
+            <a class='w3-hide-medium w3-hide-large w3-bar-item w3-button w3-hover-theme w3-right' href='settings.php?mapID=<?php echo $_GET["mapID"]; ?>'>
+                <span class='material-symbols-outlined w3-display-center'>settings</span>
+            </a>
+    </div>
+    <div style="position: absolute; top: 47px; right: 0px; width: 400px; z-index: 1000; margin: 10px;" class="w3-theme-l5" id="menu">
+            <h5 style='padding: 10px; margin: 0px;'>Veiw Settings</h5>
+            <form style="padding-left: 16px; padding-bottom: 10px;">
+                <p style="display: inline;">Raw Data: </p><input type="checkbox" id="RAW" name="RAW" onChange="getData()">
+            </form>
+            <a class='w3-button w3-hover-theme' style="position: absolute; top: 0px; right: 0px;" href='settings.php?mapID=<?php echo $_GET["mapID"]; ?>'>
                 <span class='material-symbols-outlined w3-display-center'>settings</span>
             </a>
     </div>

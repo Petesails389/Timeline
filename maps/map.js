@@ -24,9 +24,15 @@ function getData() {
     } else {
         duration = 86400;
     }
+    var raw = document.getElementById("RAW").checked;
 
     url.searchParams.set('day', day);
     url.searchParams.set('duration', duration);
+    if (raw) {
+        url.searchParams.set('RAW', 1);
+    } else {
+        url.searchParams.delete('RAW');
+    }
     history.pushState(null, "", url.href);
 
     url.pathname = url.pathname.replace("viewmap.php","points.js.php");
