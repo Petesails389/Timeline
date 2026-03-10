@@ -89,11 +89,11 @@ if ($permissions[0]) {?>
             <div style="margin: auto; width: fit-content;">
                 <input onChange="getData(true)" name="day" id="day" type="date" value="<?php echo Date("Y-m-d",$day-86400);?>">
                 <select onChange="getData(true)" id="duration" name="duration">
-                    <option value="86400" <?php if ($duration == 86400){echo"selected";}?>>1 day</option>
-                    <option value="604800" <?php if ($duration == 604800){echo"selected";}?>>1 week</option>
-                    <option value="2678400" <?php if ($duration == 2678400){echo"selected";}?>>1 month</option>
-                    <option value="31536000" <?php if ($duration == 31536000){echo"selected";}?>>1 year</option>
-                    <option value="10000000000" <?php if ($duration == 10000000000){echo"selected";}?>>All Time</option>
+                    <option value="86400" <?php if ($_GET["duration"] == 86400){echo"selected";}?>>1 day</option>
+                    <option value="604800" <?php if ($_GET["duration"] == 604800){echo"selected";}?>>1 week</option>
+                    <option value="2678400" <?php if ($_GET["duration"] == 2678400){echo"selected";}?>>1 month</option>
+                    <option value="31536000" <?php if ($_GET["duration"] == 31536000){echo"selected";}?>>1 year</option>
+                    <option value="10000000000" <?php if ($_GET["duration"] == 10000000000){echo"selected";}?>>All Time</option>
                 </select>
             </div>
         </form>
