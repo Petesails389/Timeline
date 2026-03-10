@@ -40,19 +40,19 @@ function getData(reBound = false) {
     fetch(url.href, { credentials: 'include' })
       .then(response => response.json())
       .then(json => {
-        //if you have history access then render timeline
-        if (json.history) {
-            let day = new Date(json.day).valueOf() / 1000;
-            drawTimeline(json.routes, day - json.duration, day);
-        }
-        processData(json, reBound)
+        console.log(json);
+        processData(json, reBound);
       });
   }
 
 function processData(jsonIn, reBound) {
     json = jsonIn;
 
-    globalDuration = json.duration
+    //if you have history access then render timeline
+    if (json.history) {
+        let day = new Date(json.day).valueOf() / 1000;
+        drawTimeline();
+    }
 
     //clear layers
     routesLayer.clearLayers();
@@ -120,6 +120,8 @@ function processData(jsonIn, reBound) {
     } else {
         map.addLayer(markers);
     }
+
+    map.addLayer(hoverMarker);
 }
 
 function drawRoutes(routes, heatmap) {
@@ -290,17 +292,34 @@ function drawMap() {
     getData(true);
 }
 
-function drawTimeline(routes, start, end) {
+function drawTimeline() {
+    routes = json.routes;
     timeline = document.getElementById('timeline');
 
     var x = [[],[],[],[],[],[]];
     var y = [[],[],[],[],[],[]];
 
+    var allX = [];
+    var allY = [];
+
     var timezoneOffset = new Date().getTimezoneOffset() * 60000;
-    var start = new Date((start)*1000 - timezoneOffset).toISOString().replace("T", " ");
-    var end = new Date((end)*1000 - timezoneOffset).toISOString().replace("T", " ");
+    var start = new Date((new Date(json.day).valueOf() / 1000 - json.duration)*1000 - timezoneOffset).toISOString().replace("T", " ");
+    var end = new Date((new Date(json.day).valueOf() / 1000)*1000 - timezoneOffset).toISOString().replace("T", " ");
 
     for (let i in routes) {
+        if ((document.getElementById("timelineHover").checked || document.getElementById("timelinePoints").checked) && json.duration <= 86400) {
+            allXcurrent = [];
+            allYcurrent = [];
+            
+            for (let a in routes[i][1]){
+                xcurrent = new Date(routes[i][1][a][2]*1000 - timezoneOffset).toISOString().replace("T", " ");
+                allXcurrent.push(xcurrent);
+                allYcurrent.push(0.5);
+            }
+            allX.push(allXcurrent);
+            allY.push(allYcurrent);
+        }
+
         if (routes[i][0][2] == 0) {
             continue;
         }
@@ -328,6 +347,23 @@ function drawTimeline(routes, start, end) {
         data.push(trace);
     }
 
+    for (let a=0; a < allX.length; a++){
+        if (document.getElementById("timelinePoints").checked && json.duration < 86400) {show = 1} else {show = 0};
+        var trace = {
+            x: allX[a],
+            y: allY[a],
+            type: 'scatter',
+            mode: 'lines+markers',
+            opacity: show,
+            marker: {
+                color: '#000000',
+                size: 0,
+            },
+        };
+        data.push(trace);
+    }
+    
+
     var layout = {
         margin: {
             b: 8,
@@ -350,6 +386,7 @@ function drawTimeline(routes, start, end) {
         },
         yaxis: {
             autorange: false,
+            fixedrange: true,
             range: [0, 1],
             type: 'linear'
         }
@@ -372,11 +409,32 @@ function drawTimeline(routes, start, end) {
             var duration = end - start;
 
             highlightLayer.clearLayers();
-            if (duration < globalDuration) {
+            if (duration < json.duration) {
                 highlight(start, end);
                 return;
             }
         }
+    });
+
+    timeline.on('plotly_hover', function(eventData) {
+        //hoverMarker.clearLayers();
+
+        var route = json.routes[eventData.points[0].curveNumber - 6];
+        if (route == undefined) { return }
+
+        point = route[1][Math.floor(eventData.points[0].pointNumber)];
+
+        newIcon = L.divIcon({
+            html: `<div style="width: 16px; height: 16px; background-color: #fceaee;border-radius: 8px; border: 2px; border-style: solid; border-color: #320610;"></div>`,
+            className: "mapIcon",
+            iconSize: [18,18]
+        });
+        var newMarker = L.marker([point[0], point[1]],{title: point[2], icon: newIcon});
+        newMarker.addTo(hoverMarker);
+    });
+
+    timeline.on('plotly_unhover', function(eventData) {
+        hoverMarker.clearLayers();
     });
 }
 
@@ -385,12 +443,12 @@ var map;
 var json;
 var bounds;
 var localBounds;
-var globalDuration;
 
 //overlay layers
 var highlightLayer =  L.layerGroup("");
 var routesLayer =  L.layerGroup("");
 var markers = L.layerGroup("");
+var hoverMarker = L.layerGroup("");
 
 //icons
 var myLocation = L.divIcon({

@@ -57,7 +57,9 @@ function menu_close() {
     <div style="position: absolute; top: 47px; right: 0px; width: 400px; z-index: 1000; margin: 10px;" class="w3-theme-l5" id="menu">
             <h5 style='padding: 10px; margin: 0px;'>Veiw Settings</h5>
             <form style="padding-left: 16px; padding-bottom: 10px;">
-                <p style="display: inline;">Raw Data: </p><input type="checkbox" id="RAW" name="RAW" onChange="getData()">
+                <p style="display: inline;">Raw Data: </p><input type="checkbox" id="RAW" name="RAW" onChange="getData()"><br>
+                <p style="display: inline;">Timeline Hover: </p><input type="checkbox" id="timelineHover" name="timelineHover" onChange="drawTimeline()" checked="true"><br>
+                <p style="display: inline;">Show points on timeline: </p><input type="checkbox" id="timelinePoints" name="timelinePoints" onChange="drawTimeline()">
             </form>
             <a class='w3-button w3-hover-theme' style="position: absolute; top: 0px; right: 0px;" href='settings.php?mapID=<?php echo $_GET["mapID"]; ?>'>
                 <span class='material-symbols-outlined w3-display-center'>settings</span>
