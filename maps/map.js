@@ -84,32 +84,30 @@ function processData(jsonIn, reBound) {
         drawRoutes(json.routes, json.duration > 604800 || !json.history);
     }
 
-    //fit bounds
-    if (reBound) {
-        if(json.routes && json.routes.length > 0){
-            bounds = L.latLngBounds(json.routes[0][1]);
-            for (let key = 1; key < json.routes.length; key ++) {
-                bounds.extend(json.routes[key][1])
-            }
-            map.fitBounds(bounds);
-        } else if (json.last) {
-            map.flyTo(json.last, 15, {
-                animate: true,
-                duration: 1
-            });
-        } else if (json.home) {
-            map.flyTo(json.home, 15, {
-                animate: true,
-                duration: 1
-            });
-        } else {
-            //weird edge case if you've got acess to veiw nothing on this map....
-            //not sure why it would ever come up
-            map.flyTo([0,0], 10, {
-                animate: true,
-                duration: 1
-            });
+    //update (& fit) bounds
+    if(json.routes && json.routes.length > 0){
+        bounds = L.latLngBounds(json.routes[0][1]);
+        for (let key = 1; key < json.routes.length; key ++) {
+            bounds.extend(json.routes[key][1])
         }
+        if (reBound) {map.fitBounds(bounds);}
+    } else if (json.last || reBound) {
+        map.flyTo(json.last, 15, {
+            animate: true,
+            duration: 1
+        });
+    } else if (json.home || reBound) {
+        map.flyTo(json.home, 15, {
+            animate: true,
+            duration: 1
+        });
+    } else {
+        //weird edge case if you've got acess to veiw nothing on this map....
+        //not sure why it would ever come up
+        map.flyTo([0,0], 10, {
+            animate: true,
+            duration: 1
+        });
     }
 
     //display the layers in the right order
