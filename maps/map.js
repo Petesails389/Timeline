@@ -346,7 +346,7 @@ function drawTimeline() {
     }
 
     for (let a=0; a < allX.length; a++){
-        if (document.getElementById("timelinePoints").checked && json.duration < 86400) {show = 1} else {show = 0};
+        if (document.getElementById("timelinePoints").checked && json.duration <= 86400) {show = 1} else {show = 0};
         var trace = {
             x: allX[a],
             y: allY[a],
