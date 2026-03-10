@@ -85,8 +85,8 @@ if ($permissions[0]) {?>
         <form style ="width: 100%; font-size: medium; height: 56px;">
             <h4 style="text-align: center; margin: 0px;">Timeline:</h4>
             <div style="margin: auto; width: fit-content;">
-                <input onChange="getData()" name="day" id="day" type="date" value="<?php echo Date("Y-m-d",$day-86400);?>">
-                <select onChange="getData()" id="duration" name="duration">
+                <input onChange="getData(true)" name="day" id="day" type="date" value="<?php echo Date("Y-m-d",$day-86400);?>">
+                <select onChange="getData(true)" id="duration" name="duration">
                     <option value="86400" <?php if ($duration == 86400){echo"selected";}?>>1 day</option>
                     <option value="604800" <?php if ($duration == 604800){echo"selected";}?>>1 week</option>
                     <option value="2678400" <?php if ($duration == 2678400){echo"selected";}?>>1 month</option>

@@ -4,10 +4,10 @@ function changeDate(val) {
     date = new Date(Math.min(date.valueOf(), Date.now()));
     document.getElementById("day").valueAsDate = date;
 
-    getData()
+    getData(true)
 }
 
-function getData() {
+function getData(reBound = false) {
     //Change url & call data get
     var url = new URL(document.URL);
 
@@ -45,11 +45,11 @@ function getData() {
             let day = new Date(json.day).valueOf() / 1000;
             drawTimeline(json.routes, day - json.duration, day);
         }
-        processData(json)
+        processData(json, reBound)
       });
   }
 
-function processData(jsonIn) {
+function processData(jsonIn, reBound) {
     json = jsonIn;
 
     globalDuration = json.duration
@@ -82,8 +82,17 @@ function processData(jsonIn) {
     //draw points
     if (json.routes && json.routes.length > 0) {
         drawRoutes(json.routes, json.duration > 604800 || !json.history);
-    } else {
-        if (json.last) {
+    }
+
+    //fit bounds
+    if (reBound) {
+        if(json.routes && json.routes.length > 0){
+            bounds = L.latLngBounds(json.routes[0][1]);
+            for (let key = 1; key < json.routes.length; key ++) {
+                bounds.extend(json.routes[key][1])
+            }
+            map.fitBounds(bounds);
+        } else if (json.last) {
             map.flyTo(json.last, 15, {
                 animate: true,
                 duration: 1
@@ -131,13 +140,6 @@ function drawRoutes(routes, heatmap) {
             L.polyline(json.routes[i][1], {color: '#e62955'}).addTo(routesLayer);
         }
     }
-
-    //fit bounds
-    bounds = L.latLngBounds(routes[0][1]);
-    for (let key = 1; key < routes.length; key ++) {
-        bounds.extend(routes[key][1])
-    }
-    map.fitBounds(bounds);
 }
 
 //draws routes in time range
@@ -285,7 +287,7 @@ function drawMap() {
     zoomControls.addTo(map);
 
 
-    getData()
+    getData(true);
 }
 
 function drawTimeline(routes, start, end) {
