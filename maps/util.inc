@@ -191,6 +191,14 @@ function doIntersect($points){
 
 }
 
+//returns the height H_b of a triable abc
+function TriangleHeight ($a, $b, $c) {
+    if ($b == 0) {
+        return $a;
+    }
+    return (0.5/$b) * sqrt($a+$b+$c) * sqrt(-$a+$b+$c) * sqrt($a-$b+$c) * sqrt($a+$b-$c);
+}
+
 // $points = [[[1, 1], [10, 1]], [[1, 2], [10, 2]]]
 //     if doIntersect($points):
 //         print("Yes")
@@ -294,6 +302,39 @@ function HideBy2minDistance($points, $threshold = [170, 60]) {
     return $final;
 }
 
+function HideByNearPOI($points, $poiList, $threshold = 20){
+    $final = [];
+    foreach($points as $point){
+        foreach ($poiList as $poi){
+            if (distance($point, $poi) < $threshold){
+                $final[] = $point;
+            }
+        }
+    }
+
+    return $final;
+}
+
+function HideByPassingNearPOI($points, $poiList, $threshold = 50){
+    $final = [];
+    while (count($points) > 0){
+        $last = array_shift($points);
+
+        foreach ($poiList as $poi){
+            $a = distance($points[0], $poi);
+            $b = distance($points[0], $last);
+            $c = distance($last, $poi);
+            $h = TriangleHeight($a, $b, $c);
+
+            if ($h < $threshold && $c < $b && $a < $b ){
+                $final[] = $last;
+            }
+        }
+    }
+
+    return $final;
+}
+
 //reporcesses points and returns in html (with <br>) or plain text (with \n)
 function reprocessPoints($mapID, $day, $duration, $html = True){
     //adjust duration based on routes in time specified
@@ -305,10 +346,10 @@ function reprocessPoints($mapID, $day, $duration, $html = True){
     }
 
     $duration = $day - $first + $duration;
-        
-        //clear routes
-        ClearRoutes($mapID, $day, $duration);
-        ClearPoints($mapID, $day, $duration);
+    
+    //clear routes
+    ClearRoutes($mapID, $day, $duration);
+    ClearPoints($mapID, $day, $duration);
 
     //get points
     $points = GetPoints($mapID, $first, $duration);
@@ -321,8 +362,15 @@ function reprocessPoints($mapID, $day, $duration, $html = True){
         }
     }
 
+    //get POIs
+    $poiList = GetMarkers($mapID, true);
+
     //hide points that are too close together
-    HidePoints($mapID, HideBy2minDistance($points));
+    //HidePoints($mapID, HideBy2minDistance($points));
+
+    //hide points that are too close to a POI
+    //HidePoints($mapID, HideByNearPOI($points, $poiList));
+    HidePoints($mapID, HideByPassingNearPOI($points, $poiList));
 
     //get points again
     $points = GetPoints($mapID, $first, $duration);
