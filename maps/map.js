@@ -1,10 +1,47 @@
-function changeDate(val) {
+function changeDate(val, reBound = false) {
     var date = new Date(day.value);
-    date.setUTCDate(date.getUTCDate() + val);
-    date = new Date(Math.min(date.valueOf(), Date.now()));
-    document.getElementById("day").valueAsDate = date;
 
-    getData(true)
+    date.setTime(document.getElementById("day").valueAsDate.valueOf() + (val * 86400000));
+
+    if (val == 0) {val = -1;}
+
+    switch (document.getElementById("duration").value){
+        case "604800":
+            date = new Date(Math.min(date.valueOf(), Date.now()));
+            while (date.getDay() != 1){
+                date.setTime(date.getTime() + (val * 86400000));
+            }
+            break;
+        case "2678400":
+            date = new Date(Math.min(date.valueOf(), Date.now()));
+            while (new Date(date.valueOf()).getUTCDate() != 1){
+                date.setTime(date.getTime() + (val * 86400000));
+            }
+            break;
+        case "31536000":
+            while (new Date(date.valueOf()).getMonth() != 0 || new Date(date.valueOf()).getUTCDate() != 1){
+                date.setTime(date.getTime() + (val * 86400000));
+            }
+            break;
+        case "10000000000":
+            date = new Date(Date.now().valueOf() - 9000000000000);
+            break;
+        default:
+            //console.log(date);
+    }
+
+
+    if (document.getElementById("day").valueAsDate.valueOf() != date.valueOf()){
+        document.getElementById("day").valueAsDate = date;
+        reBound = true;
+    }
+
+    if (date.valueOf() > Date.now()) {
+        changeDate(-1, reBound);
+        return;
+    }
+
+    getData(reBound)
 }
 
 function getData(reBound = false) {
@@ -48,9 +85,11 @@ function getData(reBound = false) {
 function processData(jsonIn, reBound) {
     json = jsonIn;
 
+    //update URL & Inputs
+    document.getElementById("day").valueAsDate = new Date(json.day);
+
     //if you have history access then render timeline
     if (json.history) {
-        let day = new Date(json.day).valueOf() / 1000;
         drawTimeline();
     }
 
@@ -301,8 +340,8 @@ function drawTimeline() {
     var allY = [];
 
     var timezoneOffset = new Date().getTimezoneOffset() * 60000;
-    var start = new Date((new Date(json.day).valueOf() / 1000 - json.duration)*1000 - timezoneOffset).toISOString().replace("T", " ");
-    var end = new Date((new Date(json.day).valueOf() / 1000)*1000 - timezoneOffset).toISOString().replace("T", " ");
+    var start = new Date((new Date(json.day).valueOf() / 1000 )*1000 - timezoneOffset).toISOString().replace("T", " ");
+    var end = new Date((new Date(json.day).valueOf() / 1000 + json.duration)*1000 - timezoneOffset).toISOString().replace("T", " ");
 
     for (let i in routes) {
         if ((document.getElementById("timelineHover").checked || document.getElementById("timelinePoints").checked) && json.duration <= 86400) {

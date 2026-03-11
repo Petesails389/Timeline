@@ -18,7 +18,7 @@ if (isset($_GET["RAW"])) {
     $routes = GetRoutes($_GET["mapID"],$day,$duration);
     
     foreach ($routes as $route) {
-        $routePoints = GetPoints($_GET["mapID"],$route[1],$route[1]-$route[0]);
+        $routePoints = GetPoints($_GET["mapID"],$route[0],$route[1] - $route[0]);
         $finalRoute = [$route,$routePoints];
         array_push($finalRoutes, $finalRoute);
     }

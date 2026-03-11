@@ -300,16 +300,18 @@ function reprocessPoints($mapID, $day, $duration, $html = True){
     $routes = GetRoutes($mapID, $day, $duration);
     if (count($routes) > 0){
         $first = $routes[0][0];
-        $duration = $day-$first;
+    } else {
+        $first = $day;
+    }
+
+    $duration = $day - $first + $duration;
         
         //clear routes
         ClearRoutes($mapID, $day, $duration);
         ClearPoints($mapID, $day, $duration);
-        
-    }
 
     //get points
-    $points = GetPoints($mapID, $day, $duration);
+    $points = GetPoints($mapID, $first, $duration);
 
     if(count($points) < 2){
         if ($html){
@@ -323,7 +325,7 @@ function reprocessPoints($mapID, $day, $duration, $html = True){
     HidePoints($mapID, HideBy2minDistance($points));
 
     //get points again
-    $points = GetPoints($mapID, $day, $duration);
+    $points = GetPoints($mapID, $first, $duration);
 
     //initial splits
     $routesFirstSplit = SplitByCurrentSpeed($points);

@@ -66,6 +66,7 @@ $db->exec("CREATE TABLE IF NOT EXISTS mapMarkers (
     lng REAL NOT NULL,
     markerName TEXT(256),
     icon TEXT(256),
+    isPOI BOOLEAN DEFAULT 1,
     FOREIGN KEY (mapID) REFERENCES maps(id) ON DELETE CASCADE
 );");
 
@@ -264,13 +265,13 @@ function HidePoints($mapID, $points) {
 
 function GetPoints($mapID,$day = NULL, $duration=86400){
     if ($day == NULL) {
-        $day = strtotime(date("Y-m-d"));
+        $day = strtotime(date("Y-m-d")-86400);
     }
     global $db;
     $statement = $db->prepare('SELECT lat,lng,time FROM mapDataPoints WHERE mapID = :mapID AND hiddenPoint = 0 AND time >= :startTime AND time <= :endTime ORDER BY time');
     $statement->bindValue(':mapID',$mapID);
-    $statement->bindValue(':startTime',$day-$duration);
-    $statement->bindValue(':endTime',$day);
+    $statement->bindValue(':startTime',$day);
+    $statement->bindValue(':endTime',$day+$duration);
     $results = [];
     $result = $statement->execute();
     $next = $result->fetchArray(SQLITE3_NUM);
@@ -289,8 +290,8 @@ function GetRoutes($mapID,$day = NULL, $duration=86400){
     global $db;
     $statement = $db->prepare('SELECT startTime, endTime, routeType FROM mapRoutes WHERE mapID = :mapID AND endTime >= :startTime AND startTime <= :endTime ORDER BY startTime');
     $statement->bindValue(':mapID',$mapID);
-    $statement->bindValue(':startTime',$day-$duration);
-    $statement->bindValue(':endTime',$day);
+    $statement->bindValue(':startTime',$day);
+    $statement->bindValue(':endTime',$day+$duration);
     $results = [];
     $result = $statement->execute();
     $next = $result->fetchArray(SQLITE3_NUM);
@@ -323,11 +324,12 @@ function GetMapStartDate($mapID){
     return $result[0];
 }
 
-function GetMarkers($mapID){
+function GetMarkers($mapID, $getPOIsOnly = false){
     global $db;
     $markers = [];
-    $statement = $db->prepare('SELECT lat,lng, markerName, icon, markerID FROM mapMarkers WHERE mapID = :mapID');
+    $statement = $db->prepare('SELECT lat,lng, markerName, icon, markerID FROM mapMarkers WHERE mapID = :mapID AND (isPOI = 1 OR isPOI = :getPOIsOnly)');
     $statement->bindValue(':mapID',$mapID);
+    $statement->bindValue(':getPOIsOnly',$getPOIsOnly);
     $results = $statement->execute();
     $result = $results->fetchArray(SQLITE3_NUM);
     while ($result != false){

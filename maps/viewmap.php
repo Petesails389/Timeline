@@ -87,8 +87,8 @@ if ($permissions[0]) {?>
         <form style ="width: 100%; font-size: medium; height: 56px;">
             <h4 style="text-align: center; margin: 0px;">Timeline:</h4>
             <div style="margin: auto; width: fit-content;">
-                <input onChange="getData(true)" name="day" id="day" type="date" value="<?php echo Date("Y-m-d",$day-86400);?>">
-                <select onChange="getData(true)" id="duration" name="duration">
+                <input onChange="changeDate(0)" name="day" id="day" type="date" value="<?php echo Date("Y-m-d",$day);?>">
+                <select onChange="changeDate(0,true)" id="duration" name="duration">
                     <option value="86400" <?php if ($_GET["duration"] == 86400){echo"selected";}?>>1 day</option>
                     <option value="604800" <?php if ($_GET["duration"] == 604800){echo"selected";}?>>1 week</option>
                     <option value="2678400" <?php if ($_GET["duration"] == 2678400){echo"selected";}?>>1 month</option>
@@ -100,7 +100,7 @@ if ($permissions[0]) {?>
         <div id="timeline" style="display:inline-block; height: calc(100% - 56px); width:100%;" ></div>
     </div>
     <div style="display:inline-block; height: 100%; width:56px; vertical-align:top;">
-        <button class='w3-button w3-hover-theme' onclick="getData()" style="height: 56px;">
+        <button class='w3-button w3-hover-theme' onclick="changeDate(0)" style="height: 56px;">
             <span class="material-symbols-outlined">refresh</span>
         </button>
         <button class='w3-button w3-hover-theme' onclick="changeDate(1)" style="height: calc(100% - 56px);">

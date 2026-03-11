@@ -13,7 +13,7 @@ include "util.inc";
 $maps = GetAllMapIDs();
 
 //set day and duration
-$day = strtotime(date("Y-m-d"));
+$day = strtotime(date("Y-m-d")) - 172800;
 $duration = 172800;
 
 //get output file 

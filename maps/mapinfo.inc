@@ -27,10 +27,17 @@ $duration = $permissions[2]-$permissions[3];
 //if allowed to browse history
 if ($permissions[0]){
     if (isset($_GET["day"])) {
-        $day = min(max($permissions[3],strtotime($_GET["day"])),$permissions[2])+86400;
+        $day = min(max($permissions[3],strtotime($_GET["day"])),$permissions[2]);
     }
     if (isset($_GET["duration"])) {
-        $duration = max(min($day-$permissions[3],$_GET["duration"]),1);
+        if (isset($_GET["day"])) {
+            $desiredDuration = $_GET["duration"] + strtotime($_GET["day"]) - $day;
+            while ($desiredDuration <= 0) {
+                $desiredDuration += $_GET["duration"];
+            }
+            //echo"". $day ."";
+        }
+        $duration = max(min($permissions[2]-$day,$desiredDuration),1);
     }
 }
 
@@ -40,7 +47,7 @@ if ($day == 0) {
 }
 
 if (!$permissions[1]) {
-    $day = min(time()-(8640+3600),$day);// limit veiw to be delayed by an hour
+    $day = min(time()-(86400+3600),$day + $duration - 86400);// limit veiw to be delayed by an hour
 }
 
 //map info
