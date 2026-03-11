@@ -366,11 +366,11 @@ function reprocessPoints($mapID, $day, $duration, $html = True){
     $poiList = GetMarkers($mapID, true);
 
     //hide points that are too close together
-    //HidePoints($mapID, HideBy2minDistance($points));
+    HidePoints($mapID, HideBy2minDistance($points));
 
     //hide points that are too close to a POI
     //HidePoints($mapID, HideByNearPOI($points, $poiList));
-    HidePoints($mapID, HideByPassingNearPOI($points, $poiList));
+    //HidePoints($mapID, HideByPassingNearPOI($points, $poiList));
 
     //get points again
     $points = GetPoints($mapID, $first, $duration);
