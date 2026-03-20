@@ -54,7 +54,7 @@ function menu_close() {
                 <span class='material-symbols-outlined w3-display-center'>settings</span>
             </a>
     </div>
-    <div style="position: absolute; top: 47px; right: 0px; width: 400px; z-index: 1000; margin: 10px;" class="w3-theme-l5" id="menu">
+    <div style="position: absolute; top: 47px; right: 0px; width: 400px; z-index: 1000; margin: 10px;" class=" w3-hide-small w3-theme-l5" id="menu">
             <h5 style='padding: 10px; margin: 0px;'>Veiw Settings</h5>
             <form style="padding-left: 16px; padding-bottom: 10px;">
                 <p style="display: inline;">Raw Data: </p><input type="checkbox" id="RAW" name="RAW" onChange="getData()"><br>
