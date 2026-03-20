@@ -1,4 +1,5 @@
 function changeDate(val, reBound = false) {
+    document.getElementById("PointsProcessingResults").innerHTML = "";
     var date = new Date(day.value);
 
     date.setTime(document.getElementById("day").valueAsDate.valueOf() + (val * 86400000));
@@ -44,8 +45,7 @@ function changeDate(val, reBound = false) {
     getData(reBound)
 }
 
-function getData(reBound = false) {
-    //Change url & call data get
+function formUrl() {
     var url = new URL(document.URL);
 
     //attempt to get day and duration request from user and apply defaults if not
@@ -72,12 +72,36 @@ function getData(reBound = false) {
     }
     history.pushState(null, "", url.href);
 
+    return url;
+}
+
+function requestPointsReprocess() {
+    document.getElementById("ReprocessPointsButton").disabled = true;
+    document.getElementById("PointsProcessingResults").innerHTML = "Processing Points... Please do not refresh the page.";
+
+    //form url & call data get
+    var url = formUrl()
+
+    url.pathname = url.pathname.replace("viewmap.php","reprocesspoints.php");
+
+    fetch(url.href, { credentials: 'include' })
+      .then(response => response.text())
+      .then(text => {
+        document.getElementById("PointsProcessingResults").innerHTML = text;
+        document.getElementById("ReprocessPointsButton").disabled = false;
+        getData();
+      });
+}
+
+function getData(reBound = false) {
+    //form url & call data get
+    var url = formUrl()
+
     url.pathname = url.pathname.replace("viewmap.php","points.js.php");
 
     fetch(url.href, { credentials: 'include' })
       .then(response => response.json())
       .then(json => {
-        console.log(json);
         processData(json, reBound);
       });
   }

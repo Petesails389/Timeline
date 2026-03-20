@@ -64,6 +64,9 @@ function menu_close() {
             <a class='w3-button w3-hover-theme' style="position: absolute; top: 0px; right: 0px;" href='settings.php?mapID=<?php echo $_GET["mapID"]; ?>'>
                 <span class='material-symbols-outlined w3-display-center'>settings</span>
             </a>
+            <h5 style='padding: 10px; margin: 0px;'>Points Processing</h5>
+            <p class="w3-margin-left w3-margin-bottom w3-margin-right" id="PointsProcessingResults"></p>
+            <button id="ReprocessPointsButton" class='w3-button w3-theme-d1 w3-hover-theme w3-margin-left w3-margin-bottom' onclick="requestPointsReprocess()"><p>Reprocess</p></button>
     </div>
 </div>
 
