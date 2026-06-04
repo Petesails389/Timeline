@@ -4,7 +4,7 @@ function changeDate(val, reBound = false) {
 
     date.setTime(document.getElementById("day").valueAsDate.valueOf() + (val * 86400000));
 
-    if (val == 0) {val = -1;}
+    if (val == 0) {val = 1;}
 
     switch (document.getElementById("duration").value){
         case "604800":
@@ -15,7 +15,7 @@ function changeDate(val, reBound = false) {
             break;
         case "2678400":
             date = new Date(Math.min(date.valueOf(), Date.now()));
-            while (new Date(date.valueOf()).getUTCDate() != 1){
+            while (new Date(date.valueOf()).getUTCDate() != 6){
                 date.setTime(date.getTime() + (val * 86400000));
             }
             break;
@@ -25,7 +25,9 @@ function changeDate(val, reBound = false) {
             }
             break;
         case "10000000000":
-            date = new Date(Date.now().valueOf() - 9000000000000);
+            while (date.valueOf() < Date.now() - 86400000) {
+                date.setTime(date.getTime() + 86400000);
+            }
             break;
         default:
             //console.log(date);
@@ -37,9 +39,8 @@ function changeDate(val, reBound = false) {
         reBound = true;
     }
 
-    if (date.valueOf() > Date.now()) {
-        changeDate(-1, reBound);
-        return;
+    while (date.valueOf() - document.getElementById("duration").value > Date.now() - 86400000) {
+        date.setTime(date.getTime() - 86400000);
     }
 
     getData(reBound)
@@ -55,6 +56,7 @@ function formUrl() {
     } else {
         day = new Date().valueOf() / 1000;
     }
+    console.log(day);
     var duration = document.getElementById("duration");
     if (duration) {
         duration = duration.value;
@@ -111,6 +113,7 @@ function processData(jsonIn, reBound) {
 
     //update URL & Inputs
     document.getElementById("day").valueAsDate = new Date(json.day);
+    formUrl();
 
     //if you have history access then render timeline
     if (json.history) {
@@ -365,8 +368,8 @@ function drawTimeline() {
     var allY = [];
 
     var timezoneOffset = new Date().getTimezoneOffset() * 60000;
-    var start = new Date((new Date(json.day).valueOf() / 1000 )*1000 - timezoneOffset).toISOString().replace("T", " ");
-    var end = new Date((new Date(json.day).valueOf() / 1000 + json.duration)*1000 - timezoneOffset).toISOString().replace("T", " ");
+    var start = new Date((new Date(json.day).valueOf() / 1000 - json.duration + 86400)*1000 - timezoneOffset).toISOString().replace("T", " ");
+    var end = new Date((new Date(json.day).valueOf() / 1000 + 86400)*1000 - timezoneOffset).toISOString().replace("T", " ");
 
     for (let i in routes) {
         if ((document.getElementById("timelineHover").checked || document.getElementById("timelinePoints").checked) && json.duration <= 86400) {

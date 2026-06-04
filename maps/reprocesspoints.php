@@ -9,6 +9,7 @@ if (!$permissions[4]) {
     exit;
 }
 
+echo "$day $duration";
 echo reprocessPoints($mapID, $day, $duration);
 
 ?>

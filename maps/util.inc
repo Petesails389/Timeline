@@ -1,5 +1,15 @@
 <?php
 
+function limitPoints($points, $time){
+    $final = [array_shift($points)];
+    foreach ($points as $point){
+        if ($point[2] - $final[count($final)-1][2] >= $time){
+            array_push($final, $point);
+        }
+    }
+    return $final;
+}
+
 function vincentyGreatCircleDistance($latitudeFrom, $longitudeFrom, $latitudeTo, $longitudeTo, $earthRadius = 6371000) {
     // convert from degrees to radians
     $latFrom = deg2rad($latitudeFrom);
@@ -337,22 +347,23 @@ function HideByPassingNearPOI($points, $poiList, $threshold = 50){
 
 //reporcesses points and returns in html (with <br>) or plain text (with \n)
 function reprocessPoints($mapID, $day, $duration, $html = True){
+
     //adjust duration based on routes in time specified
     $routes = GetRoutes($mapID, $day, $duration);
+    $start = $day - $duration;
+
     if (count($routes) > 0){
-        $first = $routes[0][0];
-    } else {
-        $first = $day;
+        $start = min($routes[0][0], $start);
     }
 
-    $duration = $day - $first + $duration;
+    $duration = $day - $start;
     
     //clear routes
     ClearRoutes($mapID, $day, $duration);
     ClearPoints($mapID, $day, $duration);
 
     //get points
-    $points = GetPoints($mapID, $first, $duration);
+    $points = GetPoints($mapID, $day, $duration);
 
     if(count($points) < 2){
         if ($html){
@@ -373,7 +384,7 @@ function reprocessPoints($mapID, $day, $duration, $html = True){
     //HidePoints($mapID, HideByPassingNearPOI($points, $poiList));
 
     //get points again
-    $points = GetPoints($mapID, $first, $duration);
+    $points = GetPoints($mapID, $day, $duration);
 
     //initial splits
     $routesFirstSplit = SplitByCurrentSpeed($points);

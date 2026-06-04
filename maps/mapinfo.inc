@@ -27,17 +27,15 @@ $duration = $permissions[2]-$permissions[3];
 //if allowed to browse history
 if ($permissions[0]){
     if (isset($_GET["day"])) {
-        $day = min(max($permissions[3],strtotime($_GET["day"])),$permissions[2]);
+        $day = min(max($permissions[3],strtotime($_GET["day"])) + 86400,$permissions[2]);
     }
     if (isset($_GET["duration"])) {
+        $duration = $_GET["duration"];
         if (isset($_GET["day"])) {
-            $desiredDuration = $_GET["duration"] + strtotime($_GET["day"]) - $day;
-            while ($desiredDuration <= 0) {
-                $desiredDuration += $_GET["duration"];
-            }
-            //echo"". $day ."";
+            $displayDuration = $duration;
+            $duration = $_GET["duration"] + $day - (strtotime($_GET["day"]) + 86400);
         }
-        $duration = max(min($permissions[2]-$day,$desiredDuration),1);
+        $duration = max(min($day - $permissions[3],$duration),1);
     }
 }
 

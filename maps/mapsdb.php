@@ -126,7 +126,7 @@ function GetMapPermissions($mapID,$userID){
     $result = $statement->execute()->fetchArray(SQLITE3_NUM);
     if($result == false){
         if( CheckMapOwner($mapID,$userID) != NULL){
-            return [true, true, strtotime(date("Y-m-d")), GetMapStartDate($mapID), true];
+            return [true, true, strtotime(date("Y-m-d")) + 86400, GetMapStartDate($mapID), true];
         }
         return [0, 0, 0, 0, false];
     }
@@ -265,13 +265,13 @@ function HidePoints($mapID, $points) {
 
 function GetPoints($mapID,$day = NULL, $duration=86400){
     if ($day == NULL) {
-        $day = strtotime(date("Y-m-d")-86400);
+        $day = strtotime(date("Y-m-d")+86400);
     }
     global $db;
     $statement = $db->prepare('SELECT lat,lng,time FROM mapDataPoints WHERE mapID = :mapID AND hiddenPoint = 0 AND time >= :startTime AND time <= :endTime ORDER BY time');
     $statement->bindValue(':mapID',$mapID);
-    $statement->bindValue(':startTime',$day);
-    $statement->bindValue(':endTime',$day+$duration);
+    $statement->bindValue(':startTime',$day-$duration);
+    $statement->bindValue(':endTime',$day);
     $results = [];
     $result = $statement->execute();
     $next = $result->fetchArray(SQLITE3_NUM);
@@ -285,13 +285,13 @@ function GetPoints($mapID,$day = NULL, $duration=86400){
 
 function GetRoutes($mapID,$day = NULL, $duration=86400){
     if ($day == NULL) {
-        $day = strtotime(date("Y-m-d"));
+        $day = strtotime(date("Y-m-d")+86400);
     }
     global $db;
     $statement = $db->prepare('SELECT startTime, endTime, routeType FROM mapRoutes WHERE mapID = :mapID AND endTime >= :startTime AND startTime <= :endTime ORDER BY startTime');
     $statement->bindValue(':mapID',$mapID);
-    $statement->bindValue(':startTime',$day);
-    $statement->bindValue(':endTime',$day+$duration);
+    $statement->bindValue(':startTime',$day-$duration);
+    $statement->bindValue(':endTime',$day);
     $results = [];
     $result = $statement->execute();
     $next = $result->fetchArray(SQLITE3_NUM);

@@ -18,7 +18,8 @@ if (isset($_GET["RAW"])) {
     $routes = GetRoutes($_GET["mapID"],$day,$duration);
     
     foreach ($routes as $route) {
-        $routePoints = GetPoints($_GET["mapID"],$route[0],$route[1] - $route[0]);
+        $routePoints = GetPoints($_GET["mapID"],$route[1],$route[1] - $route[0]);
+        $routePoints = limitPoints($routePoints, 5);
         $finalRoute = [$route,$routePoints];
         array_push($finalRoutes, $finalRoute);
     }
@@ -34,7 +35,11 @@ $last = GetLastLocation($mapID);
 $last[2] = Date("Y-m-d H:i",$last[2]);
 
 //format $day
-$day = Date("Y-m-d",$day);
+$day = Date("Y-m-d",$day - 86400);
+
+if (isset($displayDuration)) {
+    $duration = $displayDuration;
+}
 
 //combine into array
 $result = array(
