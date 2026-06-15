@@ -1,4 +1,5 @@
 ErrorDocument 404 /404.php
+ErrorDocument 403 /403.php
 ErrorDocument 500 /500.php
 ErrorDocument 400 /400.php
 php_value memory_limit 512M
