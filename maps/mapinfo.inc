@@ -10,13 +10,17 @@ if ($_SERVER["REQUEST_METHOD"] != "GET"){
     header("Location: ../index.php");
     exit;
 }
+if ($mapID == NULL) {
+    http_response_code(400);
+    exit;
+}
 if (CheckMapID($mapID) == NULL){
     http_response_code(404);
     exit;
 }
 $permissions = GetMapPermissions($mapID,GetUserID($_SESSION['username']));
 if (!GetMapPermission($mapID,GetUserID($_SESSION['username']))){
-    header("Location: ../index.php");
+    http_response_code(404); //return 404 to hide map IDs from unauthorised
     exit;
 }
 

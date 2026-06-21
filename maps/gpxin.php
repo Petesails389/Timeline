@@ -5,9 +5,28 @@ use phpGPX\phpGPX;
 include "util.inc";
 include "httpbasicauth.inc";
 
+var_dump($_POST);
+$mapID = $_POST["mapID"];
+if (!isset($mapID)){
+    http_response_code(400);
+    exit;
+}
+
+if (CheckMapID($mapID) == NULL){
+    http_response_code(404);
+    exit;
+}
+
+//get the rest of the information
+if (CheckMapOwner($mapID,$userID) == NULL){
+    http_response_code(404); //return 404 to hide map IDs from unauthorised users
+    exit;
+}
+
 //cheack we can load the gpx correctly...
-if (! array_key_exists("gpx", $_FILES)) {     
-    header("Location: settings.php");
+if (! array_key_exists("gpx", $_FILES)) {
+    $_SESSION["settingsError"] = "GPX File Could not be loaded correctly";
+    header("Location: settings.php?mapID=$mapID");
     exit;
 }
 
@@ -23,26 +42,6 @@ if(file_exists($fileName)) {
 	$file = $gpx->load($fileName);
 } else {
     http_response_code(500);
-    exit;
-}
-
-//get the rest of the information
-if (!isset($_POST["mapID"])){
-    echo "No map id was provided!";
-    http_response_code(400);
-    exit;
-}
-$mapID = $_POST["mapID"];
-
-if (CheckMapID($mapID) == NULL){
-    var_dump($mapID);
-    echo "$mapID Map ID was invalid!";
-    //http_response_code(404);
-    exit;
-}
-if (CheckMapOwner($mapID,$userID) == NULL){
-    echo "Insufficent permision for this map!";
-    http_response_code(403);
     exit;
 }
 

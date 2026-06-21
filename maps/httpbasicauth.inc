@@ -9,6 +9,7 @@ if (!isset($_SERVER['PHP_AUTH_USER'])) {
     header('WWW-Authenticate: Basic realm="My Realm"');
     header('HTTP/1.0 401 Unauthorized');
     echo 'You are not authenticated to access this page at this time';
+    exit;
 }
 
 $username = $_SERVER['PHP_AUTH_USER'];
@@ -18,8 +19,8 @@ if (!Login($username, $password)){
     header('WWW-Authenticate: Basic realm="My Realm"');
     header('HTTP/1.0 401 Unauthorized');
     echo 'You are not authenticated to access this page at this time';
+    exit;
 }
 
 $userID = GetUserID($username);
-
 ?>

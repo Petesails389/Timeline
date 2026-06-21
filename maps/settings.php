@@ -5,7 +5,7 @@ include "../head.php";
 include "../header.php";
 
 if (!$permissions[4]){
-    header("Location: index.php");
+    http_response_code(404); //return 404 to hide map IDs from unauthorised users
     exit;
 }
 
@@ -24,6 +24,11 @@ $mapID = $_GET["mapID"];
 $name = GetMapName($mapID);
 $markers = GetMarkers($mapID);
 $shares = GetShares($mapID);
+
+if (isset($_SESSION["settingsError"])){
+    $error = $_SESSION["settingsError"];
+    echo "<p>$error</p>";
+} 
 ?>
 
 <div class="w3-bar w3-card">
@@ -37,7 +42,7 @@ $shares = GetShares($mapID);
     <h4>Manually add route (GPX):</h4>
     <form action="/maps/gpxin.php" method="post" enctype="multipart/form-data">
         <input type='hidden' name='mapID' value='<?php echo $mapID; ?>'>
-        <input type="file" name="gpx" size="25" /><br><br>
+        <input type="file" name="gpx"/><br><br>
 	    <input class="w3-button w3-theme w3-hover-theme" type="submit" name="submit" value="Upload" />
     </form>
 </div>
