@@ -20,7 +20,7 @@ if (!isset($_POST["mapID"])){
 }
 $mapID = $_POST["mapID"];
 if (CheckMapID($mapID) == NULL){
-    http_response_code(400);
+    http_response_code(404);
     exit;
 }
 
@@ -31,7 +31,11 @@ if (!CheckMapOwner($mapID,GetUserID($_SESSION['username']))) {
 }
 
 #check all values are set
-if (!isset($_POST["username"])){
+if (!isset($_POST["username"]) && $_POST["submit"] != "Get Link"){
+    http_response_code(400);
+    exit;
+}
+if (!isset($_POST["shareCode"]) && $_POST["submit"] != "Add" && $_POST["submit"] != "Get Link"){
     http_response_code(400);
     exit;
 }
@@ -49,23 +53,28 @@ if (!isset($_POST["expires"])){
 }
 
 $shareUserID = GetUserID($_POST["username"]);
+$shareCode = $_POST["shareCode"];
 $heatmap = isset($_POST["heatmap"]);
 $live = isset($_POST["live"]);
 $startDate = strtotime($_POST["start"]);
 $endDate = strtotime($_POST["end"]);
 $expires = strtotime($_POST["expires"]);
 
-#check user exists
-if ($shareUserID == NULL) {
-    header("Location: settings.php?mapID=$mapID");
+if ($_POST["submit"] == "Get Link") {
+    $shareCode = "S_".base64_encode(random_bytes(16));
+}
+
+#check at least user OR sharecode is set
+if ($shareUserID == NULL && $shareCode == NULL) {
+    http_response_code(400);
     exit;
 }
 
 if($_POST["submit"] == "Delete") {
-    DeleteShare($mapID, $shareUserID);
-    header("Location: settings.php?mapID=$mapID");
+    DeleteShare($mapID, $shareUserID, $shareCode);
+    header("Location: settings.php?mapID=$mapID&focus=Shares");
     exit;
 }
 
-UpdateShare($mapID, $shareUserID, !$heatmap, $live, $startDate, $endDate, $expires);
-header("Location: settings.php?mapID=$mapID");
+UpdateShare($mapID, $shareUserID, !$heatmap, $live, $startDate, $endDate, $expires, $shareCode);
+header("Location: settings.php?mapID=$mapID&focus=Shares");

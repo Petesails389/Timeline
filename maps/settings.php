@@ -112,45 +112,48 @@ if (isset($_SESSION["settingsError"])){
     <div class="w3-grid" style="gap:16px; grid-template-columns:repeat(auto-fill,minmax(240px,1fr))">
     <?php 
     foreach ($shares as $share){
-        $username = GetUser($share[1])[1];
-        echo "<div class='w3-card w3-padding'><form action='updateshare.php' method='post'>
-        <h3>Shared with $username:</h3>
+        $username = "with ". GetUser($share[1])[1];
+        $shareCode = $share[7];
+        if ($share[1] == 0){$username = "at <a style=color:#ac1437;  href=/maps/viewmap.php?mapID=$mapID&shareCode=$shareCode>link</a>";}
+        ?>
+        <div class='w3-card w3-padding'><form action='updateshare.php' method='post'>
+        <h3>Shared <?php echo "$username:" ?></h3>
         <div>
-            <input type='hidden' name='mapID' value='$mapID'>
-            <input type='hidden'  class='w3-border-theme-select' name='username' value='$username' required>
+            <input type='hidden' name='mapID' value='<?php echo $mapID; ?>'>
+            <input type='hidden' name='username' value='<?php echo $username; ?>'>
+            <input type='hidden' name='shareCode' value='<?php echo $shareCode; ?>'>
             <div>
                 <label class='tooltip'>heatmap only:<span class='tooltiptext'>Prevents users from seeing when your trips took place.</span></label>
-                <input type='checkbox'  class='w3-border-theme-select' name='heatmap' ";if ($share[2] == 0) {echo "checked";} echo ">
+                <input type='checkbox'  class='w3-border-theme-select' name='heatmap' <?php if ($share[2] == 0) {echo "checked";} ?>>
             </div>
             <div>
                 <label class='tooltip'>Live only:<span class='tooltiptext'>Prevents users from seeing trips at all.</span></label>
-                <input type='checkbox'  class='w3-border-theme-select' name='live'";if ($share[3] == 1) {echo "checked";} echo ">
+                <input type='checkbox'  class='w3-border-theme-select' name='live'<?php if ($share[3] == 1) {echo "checked";} ?>>
             </div>
             <div>
                 <label>Start Date:</label><br>
-                <input type='datetime-local'  class='w3-border-theme-select' name='start' value='"; echo date("Y-m-d\TH:i", $share[4]); echo "'>
+                <input type='datetime-local'  class='w3-border-theme-select' name='start' value='<?php echo date("Y-m-d\TH:i", $share[4]); ?>'>
             </div>
             <div>
                 <label>End Date:</label><br>
-                <input type='datetime-local'  class='w3-border-theme-select' name='end' value='"; echo date("Y-m-d\TH:i", $share[5]); echo "'>
+                <input type='datetime-local'  class='w3-border-theme-select' name='end' value='<?php echo date("Y-m-d\TH:i", $share[5]); ?>'>
             </div>
             <div>
                 <label>Expires:</label><br>
-                <input type='datetime-local'  class='w3-border-theme-select' name='expires' value='"; echo date("Y-m-d\TH:i", $share[6]); echo "'>
+                <input type='datetime-local'  class='w3-border-theme-select' name='expires' value='<?php echo date("Y-m-d\TH:i", $share[6]); ?>'>
             </div><br>
             <input type='submit' name='submit' class='w3-button w3-theme-d2 w3-hover-theme' value='Update'>
             <input type='submit' name='submit' class='w3-button w3-theme-d2 w3-hover-theme' value='Delete'>
         </div>
-    </form></div>";
-    }
-    ?>
+    </form></div>
+    <?php } ?>
     <div class='w3-card w3-padding'><form action='updateshare.php' onsubmit='OnSubmit("newShare")' method='post' name="newShare">
         <h3>New Map Share:</h3>
         <div>
             <input type='hidden' name='mapID' value='<?php echo $mapID; ?>'>
             <div>
-                <label>Username:</label><br>
-                <input type='text'  class='w3-border-theme-select' name='username' value="Test" required>
+                <label class="tooltip">Username:<span class="tooltiptext">Leave empty for link sharing.</span></label><br>
+                <input type='text'  class='w3-border-theme-select' name='username'>
             </div>
             <div>
                 <label>Mode:</label><br>
@@ -186,6 +189,7 @@ if (isset($_SESSION["settingsError"])){
                 <input type='datetime-local'  class='w3-border-theme-select' name='expires''>
             </div><br>
             <input type='submit' name='submit' class='w3-button w3-theme-d2 w3-hover-theme' value='Add'>
+            <input type='submit' name='submit' class='w3-button w3-theme-d2 w3-hover-theme' value='Get Link'>
         </div>
     </form></div>
     </div>

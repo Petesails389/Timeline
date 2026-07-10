@@ -53,7 +53,8 @@ $db->exec("CREATE TABLE IF NOT EXISTS mapShares (
     startTime INT,
     endTime INT,
     expires INT,
-    PRIMARY KEY (mapID,userID),
+    shareCode TEXT,
+    PRIMARY KEY (mapID,userID,shareCode),
     FOREIGN KEY (mapID) REFERENCES maps(id) ON DELETE CASCADE
     FOREIGN KEY (userID) REFERENCES users(id) ON DELETE CASCADE
 );");
@@ -118,11 +119,15 @@ function CheckMapOwner($mapID,$ownerID) {
 }
 
 # returns an array format [history, current, startdate, enddate, owner]
-function GetMapPermissions($mapID,$userID){
+function GetMapPermissions($mapID,$userID, $shareCode = NULL){
     global $db;
-    $statement = $db->prepare('SELECT history, current, startTime, endTime FROM mapShares WHERE userID = :userID AND mapID = :mapID');
+    if($userID == NULL){
+        $userID = 0;
+    }
+    $statement = $db->prepare('SELECT history, current, startTime, endTime FROM mapShares WHERE userID = :userID AND mapID = :mapID AND shareCode = :shareCode');
     $statement->bindValue(':userID',$userID);
     $statement->bindValue(':mapID',$mapID);
+    $statement->bindValue(':shareCode',$shareCode);
     $result = $statement->execute()->fetchArray(SQLITE3_NUM);
     if($result == false){
         if( CheckMapOwner($mapID,$userID) != NULL){
@@ -133,12 +138,16 @@ function GetMapPermissions($mapID,$userID){
     return [$result[0]==1,$result[1]==1, $result[3], $result[2], false];
 }
 
-function GetMapPermission($mapID,$userID) {
+function GetMapPermission($mapID,$userID, $shareCode = NULL) {
     global $db;
+    if($userID == NULL){
+        $userID = 0;
+    }
     $owner = CheckMapOwner($mapID,$userID) != NULL;
-    $statement = $db->prepare('SELECT userID FROM mapShares WHERE userID = :userID AND mapID = :mapID');
+    $statement = $db->prepare('SELECT mapID FROM mapShares WHERE userID = :userID AND mapID = :mapID AND shareCode = :shareCode');
     $statement->bindValue(':userID',$userID);
     $statement->bindValue(':mapID',$mapID);
+    $statement->bindValue('shareCode',$shareCode);
     $result = $statement->execute()->fetchArray(SQLITE3_NUM);
     if($result == false){
         return $owner;
@@ -382,9 +391,12 @@ function GetShares($mapID){
     return $shares;
 }
 
-function UpdateShare($mapID, $userID, $history, $current, $startDate, $endDate, $expires){
+function UpdateShare($mapID, $userID, $history, $current, $startDate, $endDate, $expires, $shareCode = NULL){
     global $db;
-    $statement = $db->prepare('INSERT OR REPLACE INTO mapShares (mapID, userID, history, current, startTime, endTime, expires)  VALUES(:mapID, :userID, :history, :current, :startDate, :endDate, :expires)');
+    if($userID == NULL){
+        $userID = 0;
+    }
+    $statement = $db->prepare('INSERT OR REPLACE INTO mapShares (mapID, userID, history, current, startTime, endTime, expires, shareCode)  VALUES(:mapID, :userID, :history, :current, :startDate, :endDate, :expires, :shareCode)');
     $statement->bindValue(':mapID',$mapID);
     $statement->bindValue(':userID',$userID);
     $statement->bindValue(':history',$history);
@@ -392,14 +404,19 @@ function UpdateShare($mapID, $userID, $history, $current, $startDate, $endDate, 
     $statement->bindValue(':startDate',$startDate);
     $statement->bindValue(':endDate',$endDate);
     $statement->bindValue(':expires',$expires);
+    $statement->bindValue(':shareCode',$shareCode);
     $statement->execute();
 }
 
-function DeleteShare($mapID, $userID){
+function DeleteShare($mapID, $userID, $shareCode = NULL){
     global $db;
-    $statement = $db->prepare('DELETE FROM mapShares WHERE mapID = :mapID AND userID = :userID');
+    if($userID == NULL){
+        $userID = 0;
+    }
+    $statement = $db->prepare('DELETE FROM mapShares WHERE mapID = :mapID AND userID = :userID AND shareCode = :shareCode');
     $statement->bindValue(':mapID',$mapID);
     $statement->bindValue(':userID',$userID);
+    $statement->bindValue(':shareCode',$shareCode);
     $statement->execute();
 }
 

@@ -1,7 +1,7 @@
 <?php
 $mapID = $_GET["mapID"];
 
-if (!isset($_SESSION['username'])) {
+if (!isset($_SESSION['username']) && !isset($_GET["shareCode"])) {
     $redirect = $_SERVER["PHP_SELF"] . "?" . $_SERVER['QUERY_STRING'];
     header("Location: ../accounts/login.php?redirect=$redirect");
     exit;
@@ -18,8 +18,15 @@ if (CheckMapID($mapID) == NULL){
     http_response_code(404);
     exit;
 }
-$permissions = GetMapPermissions($mapID,GetUserID($_SESSION['username']));
-if (!GetMapPermission($mapID,GetUserID($_SESSION['username']))){
+
+if (isset($_GET["shareCode"])) {
+    $shareCode = $_GET["shareCode"];
+} else {
+    $shareCode = NULL;
+}
+
+$permissions = GetMapPermissions($mapID,GetUserID($_SESSION['username']),$shareCode);
+if (!GetMapPermission($mapID,GetUserID($_SESSION['username']),$shareCode)){
     http_response_code(404); //return 404 to hide map IDs from unauthorised
     exit;
 }
