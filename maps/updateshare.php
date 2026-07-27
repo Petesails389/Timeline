@@ -18,7 +18,7 @@ if (!isset($_POST["mapID"])){
     http_response_code(400);
     exit;
 }
-$mapID = $_POST["mapID"];
+$mapID = (int) $_POST["mapID"];
 if (CheckMapID($mapID) == NULL){
     http_response_code(404);
     exit;
@@ -31,11 +31,7 @@ if (!CheckMapOwner($mapID,GetUserID($_SESSION['username']))) {
 }
 
 #check all values are set
-if (!isset($_POST["username"]) && $_POST["submit"] != "Get Link"){
-    http_response_code(400);
-    exit;
-}
-if (!isset($_POST["shareCode"]) && $_POST["submit"] != "Add" && $_POST["submit"] != "Get Link"){
+if (!isset($_POST["username"]) && $_POST["submit"] == "ADD"){
     http_response_code(400);
     exit;
 }
@@ -52,8 +48,8 @@ if (!isset($_POST["expires"])){
     exit;
 }
 
-$shareUserID = GetUserID($_POST["username"]);
-$shareCode = $_POST["shareCode"];
+$shareUserID = GetUserID($_POST["username"] ?? NULL);
+$shareCode = $_POST["shareCode"] ?? NULL;
 $heatmap = isset($_POST["heatmap"]);
 $live = isset($_POST["live"]);
 $startDate = strtotime($_POST["start"]);

@@ -112,16 +112,19 @@ if (isset($_SESSION["settingsError"])){
     <div class="w3-grid" style="gap:16px; grid-template-columns:repeat(auto-fill,minmax(240px,1fr))">
     <?php 
     foreach ($shares as $share){
-        $username = "with ". GetUser($share[1])[1];
+        $usernameText = "with ". GetUser($share[1])[1];
+        $username = GetUser($share[1])[1];
         $shareCode = $share[7];
-        if ($share[1] == 0){$username = "at <a style=color:#ac1437;  href=/maps/viewmap.php?mapID=$mapID&shareCode=$shareCode>link</a>";}
+        if ($share[1] == 0){
+            $usernameText = "at <a style=color:#ac1437;  href=/maps/viewmap.php?mapID=$mapID&shareCode=$shareCode>link</a>";
+            }
         ?>
         <div class='w3-card w3-padding'><form action='updateshare.php' method='post'>
-        <h3>Shared <?php echo "$username:" ?></h3>
+        <h3>Shared <?php echo "$usernameText:" ?></h3>
         <div>
             <input type='hidden' name='mapID' value='<?php echo $mapID; ?>'>
-            <input type='hidden' name='username' value='<?php echo $username; ?>'>
-            <input type='hidden' name='shareCode' value='<?php echo $shareCode; ?>'>
+            <?php if ($share[1] != 0) { ?> <input type='hidden' name='username' value='<?php echo $username; ?>'> <?php }?>
+            <?php if ($shareCode != NULL) { ?> <input type='hidden' name='shareCode' value='<?php echo $shareCode; ?>'> <?php }?>
             <div>
                 <label class='tooltip'>heatmap only:<span class='tooltiptext'>Prevents users from seeing when your trips took place.</span></label>
                 <input type='checkbox'  class='w3-border-theme-select' name='heatmap' <?php if ($share[2] == 0) {echo "checked";} ?>>

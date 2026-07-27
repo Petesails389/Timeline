@@ -404,7 +404,7 @@ function UpdateShare($mapID, $userID, $history, $current, $startDate, $endDate, 
     $statement->bindValue(':startDate',$startDate);
     $statement->bindValue(':endDate',$endDate);
     $statement->bindValue(':expires',$expires);
-    $statement->bindValue(':shareCode',$shareCode);
+    $statement->bindValue(':shareCode',$shareCode ?? "");
     $statement->execute();
 }
 
@@ -416,7 +416,7 @@ function DeleteShare($mapID, $userID, $shareCode = NULL){
     $statement = $db->prepare('DELETE FROM mapShares WHERE mapID = :mapID AND userID = :userID AND shareCode = :shareCode');
     $statement->bindValue(':mapID',$mapID);
     $statement->bindValue(':userID',$userID);
-    $statement->bindValue(':shareCode',$shareCode);
+    $statement->bindValue(':shareCode',$shareCode ?? "");
     $statement->execute();
 }
 
