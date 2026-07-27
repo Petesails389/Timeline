@@ -111,12 +111,12 @@ function getData(reBound = false) {
 function processData(jsonIn, reBound) {
     json = jsonIn;
 
-    //update URL & Inputs
-    document.getElementById("day").valueAsDate = new Date(json.day);
-    formUrl();
-
     //if you have history access then render timeline
     if (json.history) {
+        //update URL & Inputs
+        document.getElementById("day").valueAsDate = new Date(json.day);
+        formUrl();
+        
         drawTimeline();
     }
 
