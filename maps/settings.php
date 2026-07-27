@@ -4,7 +4,7 @@ include "mapinfo.inc";
 include "../head.php";
 include "../header.php";
 
-if (!$permissions[4]){
+if (!$permissions["owner"]){
     http_response_code(404); //return 404 to hide map IDs from unauthorised users
     exit;
 }

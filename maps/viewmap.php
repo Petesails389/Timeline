@@ -76,7 +76,7 @@ function menu_close() {
 <div id='map' style='height: 100%; margin: 0px;'></div>
 
 <?php
-if ($permissions[0]) {?>
+if ($permissions["history"]) {?>
 <!-- Timeline -->
 <div style="width: 100%; height: 50%; max-height: 200px; font-size: 0;">
     <div style="display:inline-block; height: 100%; width:56px; vertical-align:top;">

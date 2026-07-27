@@ -118,7 +118,7 @@ function CheckMapOwner($mapID,$ownerID) {
     return $result[0];
 }
 
-# returns an array format [history, current, startdate, enddate, owner]
+# returns an array format [history, current, startTime, endTime, owner]
 function GetMapPermissions($mapID,$userID, $shareCode = NULL){
     global $db;
     if($userID == NULL){
@@ -131,11 +131,15 @@ function GetMapPermissions($mapID,$userID, $shareCode = NULL){
     $result = $statement->execute()->fetchArray(SQLITE3_NUM);
     if($result == false){
         if( CheckMapOwner($mapID,$userID) != NULL){
-            return [true, true, strtotime(date("Y-m-d")) + 86400, GetMapStartDate($mapID), true];
+            $result = [true, true, strtotime(date("Y-m-d")) + 86400, GetMapStartDate($mapID), true];
+        } else{
+            $result = [0, 0, 0, 0, false];
         }
-        return [0, 0, 0, 0, false];
+    } else {
+        $result = [$result[0]==1,$result[1]==1, $result[3], $result[2], false];
     }
-    return [$result[0]==1,$result[1]==1, $result[3], $result[2], false];
+
+    return array("history" => $result[0], "current" => $result[1], "startTime" => $result[2], "endTime" => $result[3], "owner" => $result[4]);
 }
 
 function GetMapPermission($mapID,$userID, $shareCode = NULL) {

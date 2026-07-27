@@ -4,7 +4,7 @@ include "util.inc";
 include "mapinfo.inc";
 
 //if not the owner don't access this page
-if (!$permissions[4]) {
+if (!$permissions["owner"]) {
     header("Location: index.php");
     exit;
 }

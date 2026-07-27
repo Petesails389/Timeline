@@ -25,7 +25,7 @@ if (isset($_GET["RAW"])) {
     }
 }
 
-if (!$permissions[0]){
+if (!$permissions["history"]){
     //shuffle points
     shuffle($finalRoutes);
 }
@@ -43,15 +43,15 @@ if (isset($displayDuration)) {
 
 //combine into array
 $result = array(
-    "history"=>$permissions[0],
+    "history"=>$permissions["history"],
     "name"=>$name,
     "day"=>$day,
     "duration"=>$duration,
     "routes"=>$finalRoutes,
     "home"=>GetCenter($mapID)
 );
-if ($permissions[0]){$result["markers"] = $markers;}
-if ($permissions[1]){$result["last"] = $last;}
+if ($permissions["history"]){$result["markers"] = $markers;}
+if ($permissions["current"]){$result["last"] = $last;}
 
 //close db to save memory before encoding
 $db->close();
