@@ -116,7 +116,9 @@ if (isset($_SESSION["settingsError"])){
         $username = GetUser($share[1])[1];
         $shareCode = $share[7];
         if ($share[1] == 0){
-            $usernameText = "at <a style=color:#ac1437;  href=/maps/viewmap.php?mapID=$mapID&shareCode=$shareCode>link</a>";
+            $duration = $share[5]-$share[4];
+            $day = date("Y-m-d", $share[4]);
+            $usernameText = "at <a style=color:#ac1437;  href=/maps/viewmap.php?mapID=$mapID&shareCode=$shareCode&duration=$duration&day=$day>link</a>";
             }
         ?>
         <div class='w3-card w3-padding'><form action='updateshare.php' method='post'>
