@@ -90,13 +90,14 @@ if ($permissions["history"]) {?>
         <form style ="width: 100%; font-size: medium; height: 56px;">
             <h4 style="text-align: center; margin: 0px;">Timeline:</h4>
             <div style="margin: auto; width: fit-content;">
-                <input onChange="changeDate(0)" name="day" id="day" type="date" value="<?php echo Date("Y-m-d",$day - 86400);?>">
+                <input onChange="changeDate(0)" name="day" id="day" type="date" value="<?php echo Date("Y-m-d",$day);?>">
                 <select onChange="changeDate(0,true)" id="duration" name="duration">
                     <option value="86400" <?php if ($_GET["duration"] == 86400){echo"selected";}?>>1 day</option>
                     <option value="604800" <?php if ($_GET["duration"] == 604800){echo"selected";}?>>1 week</option>
                     <option value="2678400" <?php if ($_GET["duration"] == 2678400){echo"selected";}?>>1 month</option>
                     <option value="31536000" <?php if ($_GET["duration"] == 31536000){echo"selected";}?>>1 year</option>
                     <option value="10000000000" <?php if ($_GET["duration"] == 10000000000){echo"selected";}?>>All Time</option>
+                    <option id="customDuration" <?php if (!in_array($_GET["duration"], [86400,604800,2678400,31536000,10000000000])){echo"selected value=".$_GET["duration"];}?>>Custom</option>
                 </select>
             </div>
         </form>

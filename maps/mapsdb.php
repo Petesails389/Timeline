@@ -131,12 +131,12 @@ function GetMapPermissions($mapID,$userID, $shareCode = NULL){
     $result = $statement->execute()->fetchArray(SQLITE3_NUM);
     if($result == false){
         if( CheckMapOwner($mapID,$userID) != NULL){
-            $result = [true, true, strtotime(date("Y-m-d")) + 86400, GetMapStartDate($mapID), true];
+            $result = [true, true, GetMapStartDate($mapID), strtotime(date("Y-m-d")) + 86400, true];
         } else{
             $result = [0, 0, 0, 0, false];
         }
     } else {
-        $result = [$result[0]==1,$result[1]==1, $result[3], $result[2], false];
+        $result = [$result[0]==1,$result[1]==1, $result[2], $result[3], false];
     }
 
     return array("history" => $result[0], "current" => $result[1], "startTime" => $result[2], "endTime" => $result[3], "owner" => $result[4]);
@@ -283,8 +283,8 @@ function GetPoints($mapID,$day = NULL, $duration=86400){
     global $db;
     $statement = $db->prepare('SELECT lat,lng,time FROM mapDataPoints WHERE mapID = :mapID AND hiddenPoint = 0 AND time >= :startTime AND time <= :endTime ORDER BY time');
     $statement->bindValue(':mapID',$mapID);
-    $statement->bindValue(':startTime',$day-$duration);
-    $statement->bindValue(':endTime',$day);
+    $statement->bindValue(':startTime',$day);
+    $statement->bindValue(':endTime',$day+$duration);
     $results = [];
     $result = $statement->execute();
     $next = $result->fetchArray(SQLITE3_NUM);
@@ -303,8 +303,8 @@ function GetRoutes($mapID,$day = NULL, $duration=86400){
     global $db;
     $statement = $db->prepare('SELECT startTime, endTime, routeType FROM mapRoutes WHERE mapID = :mapID AND endTime >= :startTime AND startTime <= :endTime ORDER BY startTime');
     $statement->bindValue(':mapID',$mapID);
-    $statement->bindValue(':startTime',$day-$duration);
-    $statement->bindValue(':endTime',$day);
+    $statement->bindValue(':startTime',$day);
+    $statement->bindValue(':endTime',$day+$duration);
     $results = [];
     $result = $statement->execute();
     $next = $result->fetchArray(SQLITE3_NUM);
@@ -395,18 +395,18 @@ function GetShares($mapID){
     return $shares;
 }
 
-function UpdateShare($mapID, $userID, $history, $current, $startDate, $endDate, $expires, $shareCode = NULL){
+function UpdateShare($mapID, $userID, $history, $current, $startTime, $endTime, $expires, $shareCode = NULL){
     global $db;
     if($userID == NULL){
         $userID = 0;
     }
-    $statement = $db->prepare('INSERT OR REPLACE INTO mapShares (mapID, userID, history, current, startTime, endTime, expires, shareCode)  VALUES(:mapID, :userID, :history, :current, :startDate, :endDate, :expires, :shareCode)');
+    $statement = $db->prepare('INSERT OR REPLACE INTO mapShares (mapID, userID, history, current, startTime, endTime, expires, shareCode)  VALUES(:mapID, :userID, :history, :current, :startTime, :endTime, :expires, :shareCode)');
     $statement->bindValue(':mapID',$mapID);
     $statement->bindValue(':userID',$userID);
     $statement->bindValue(':history',$history);
     $statement->bindValue(':current',$current);
-    $statement->bindValue(':startDate',$startDate);
-    $statement->bindValue(':endDate',$endDate);
+    $statement->bindValue(':startTime',$startTime);
+    $statement->bindValue(':endTime',$endTime);
     $statement->bindValue(':expires',$expires);
     $statement->bindValue(':shareCode',$shareCode ?? "");
     $statement->execute();

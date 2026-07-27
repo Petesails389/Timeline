@@ -52,8 +52,8 @@ $shareUserID = GetUserID($_POST["username"] ?? NULL);
 $shareCode = $_POST["shareCode"] ?? NULL;
 $heatmap = isset($_POST["heatmap"]);
 $live = isset($_POST["live"]);
-$startDate = strtotime($_POST["start"]);
-$endDate = strtotime($_POST["end"]);
+$startTime = strtotime($_POST["start"]);
+$endTime = strtotime($_POST["end"]);
 $expires = strtotime($_POST["expires"]);
 
 if ($_POST["submit"] == "Get Link") {
@@ -72,5 +72,5 @@ if($_POST["submit"] == "Delete") {
     exit;
 }
 
-UpdateShare($mapID, $shareUserID, !$heatmap, $live, $startDate, $endDate, $expires, $shareCode);
+UpdateShare($mapID, $shareUserID, !$heatmap, $live, $startTime, $endTime, $expires, $shareCode);
 header("Location: settings.php?mapID=$mapID&focus=Shares");

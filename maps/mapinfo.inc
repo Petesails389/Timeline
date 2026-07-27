@@ -33,20 +33,15 @@ if (!GetMapPermission($mapID,GetUserID($_SESSION['username']),$shareCode)){
 
 //sets day and range of data (permission will return the duration of the whole map if they are the owner)
 $day = $permissions["startTime"];
-$duration = $permissions["startTime"]-$permissions["endTime"];
+$duration = $permissions["endTime"]-$permissions["startTime"];
 
 //if allowed to browse history
 if ($permissions["history"]){
-    if (isset($_GET["day"])) {
-        $day = min(max($permissions["endTime"],strtotime($_GET["day"])) + 86400,$permissions["startTime"]);
-    }
     if (isset($_GET["duration"])) {
-        $duration = $_GET["duration"];
-        if (isset($_GET["day"])) {
-            $displayDuration = $duration;
-            $duration = $_GET["duration"] + $day - (strtotime($_GET["day"]) + 86400);
-        }
-        $duration = max(min($day - $permissions["endTime"],$duration),1);
+        $duration = min($duration, $_GET["duration"]);
+    }
+    if (isset($_GET["day"])) {
+        $day = max(min($permissions["endTime"]-$duration,$_GET["day"]),$permissions["startTime"]);
     }
 }
 
@@ -56,7 +51,8 @@ if ($day == 0) {
 }
 
 if (!$permissions["current"]) {
-    $day = min(time()-(86400+3600),$day + $duration - 86400);// limit veiw to be delayed by an hour
+    //TODO-NEEDS FIXING
+    //$day = min(time()-(86400+3600),$day + $duration - 86400);// limit veiw to be delayed by an hour
 }
 
 //map info

@@ -18,7 +18,7 @@ function changeDate(val, reBound = false) {
             while (new Date(date.valueOf()).getUTCDate() != 6){
                 date.setTime(date.getTime() + (val * 86400000));
             }
-            break;
+            break;duraition
         case "31536000":
             while (new Date(date.valueOf()).getMonth() != 0 || new Date(date.valueOf()).getUTCDate() != 1){
                 date.setTime(date.getTime() + (val * 86400000));
@@ -26,7 +26,7 @@ function changeDate(val, reBound = false) {
             break;
         case "10000000000":
             while (date.valueOf() < Date.now() - 86400000) {
-                date.setTime(date.getTime() + 86400000);
+                date.setTime(date.getTime());
             }
             break;
         default:
@@ -50,18 +50,38 @@ function formUrl() {
     var url = new URL(document.URL);
 
     //attempt to get day and duration request from user and apply defaults if not
-    var day = document.getElementById("day");
-    if (day) {
-        day = day.value;
-    } else {
-        day = new Date().valueOf() / 1000;
+    var day;
+    if (document.getElementById("day")) {
+        day = new Date(document.getElementById("day").value).valueOf() / 1000;
+        console.log(day);
+        console.log("DOCUMENT");
+    } 
+    else  if (url.searchParams.get('day')){
+        day = url.searchParams.get('day');
+        console.log(day);
+        console.log("URL");
     }
-    console.log(day);
-    var duration = document.getElementById("duration");
-    if (duration) {
-        duration = duration.value;
-    } else {
+    else {
+        day = new Date().valueOf() / 1000;
+        console.log(day);
+        console.log("DEFAULT");
+    }
+
+    var duration;
+    if (document.getElementById("duration")) {
+        duration = document.getElementById("duration").value;
+        console.log(duration);
+        console.log("DOCUMENT");
+    } 
+    else if (url.searchParams.get('duration')){
+        duration = url.searchParams.get('duration');
+        console.log(duration);
+        console.log("URL");
+    }
+    else {
         duration = 86400;
+        console.log(duration);
+        console.log("DEFAULT");
     }
     var raw = document.getElementById("RAW").checked;
 
@@ -114,9 +134,12 @@ function processData(jsonIn, reBound) {
     //if you have history access then render timeline
     if (json.history) {
         //update URL & Inputs
-        document.getElementById("day").valueAsDate = new Date(json.day);
+        document.getElementById("day").valueAsDate = new Date(json.day * 1000);
+        if (!([86400,604800,2678400,31536000,10000000000].includes(json.duration))){
+            document.getElementById("customDuration").value = json.duration;
+        }
+        document.getElementById("duration").value = json.duration;
         formUrl();
-        
         drawTimeline();
     }
 
@@ -368,8 +391,8 @@ function drawTimeline() {
     var allY = [];
 
     var timezoneOffset = new Date().getTimezoneOffset() * 60000;
-    var start = new Date((new Date(json.day).valueOf() / 1000 - json.duration + 86400)*1000 - timezoneOffset).toISOString().replace("T", " ");
-    var end = new Date((new Date(json.day).valueOf() / 1000 + 86400)*1000 - timezoneOffset).toISOString().replace("T", " ");
+    var start = new Date(json.day*1000 - timezoneOffset).toISOString().replace("T", " ");
+    var end = new Date((parseInt(json.day) + parseInt(json.duration))*1000 - timezoneOffset).toISOString().replace("T", " ");
 
     for (let i in routes) {
         if ((document.getElementById("timelineHover").checked || document.getElementById("timelinePoints").checked) && json.duration <= 86400) {

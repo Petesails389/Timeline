@@ -28,14 +28,16 @@ $shares = GetShares($mapID);
 if (isset($_SESSION["settingsError"])){
     $error = $_SESSION["settingsError"];
     echo "<p>$error</p>";
-} 
+}
+
+$defaultDay = strtotime(date("Y-m-d"));
 ?>
 
 <div class="w3-bar w3-card">
     <button class="w3-bar-item w3-button w3-hover-theme <?php if ($focus == "Settings") { echo "w3-theme-d4";}?> tablink" onclick="openTab(event, 'Settings')">Settings</button>
     <button class="w3-bar-item w3-button w3-hover-theme <?php if ($focus == "Markers") { echo "w3-theme-d4";}?> tablink" onclick="openTab(event, 'Markers')">Markers</button>
     <button class="w3-bar-item w3-button w3-hover-theme <?php if ($focus == "Shares") { echo "w3-theme-d4";}?> tablink" onclick="openTab(event, 'Shares')">Shares</button>
-    <a class='w3-bar-item w3-right w3-button w3-theme-d2 w3-hover-theme' href='viewmap.php?mapID=<?php echo $mapID; ?>'>View Map</a>
+    <a class='w3-bar-item w3-right w3-button w3-theme-d2 w3-hover-theme' href='viewmap.php?mapID=<?php echo "$mapID &day=$defaultDay"; ?> &duration=86400'>View Map</a>
 </div>
 
 <div id="Settings" class="tab w3-card w3-padding" <?php if ($focus != "Settings") { echo "style='display: none;'";}?>>
@@ -117,7 +119,7 @@ if (isset($_SESSION["settingsError"])){
         $shareCode = $share[7];
         if ($share[1] == 0){
             $duration = $share[5]-$share[4];
-            $day = date("Y-m-d", $share[4]);
+            $day = $share[4];
             $usernameText = "at <a style=color:#ac1437;  href=/maps/viewmap.php?mapID=$mapID&shareCode=$shareCode&duration=$duration&day=$day>link</a>";
             }
         ?>
