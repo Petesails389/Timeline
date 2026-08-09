@@ -1,6 +1,9 @@
 <?php
 
 function limitPoints($points, $time){
+    if (count($points) < 10) {
+        return $points;
+    }
     $final = [array_shift($points)];
     foreach ($points as $point){
         if ($point[2] - $final[count($final)-1][2] >= $time){
@@ -431,10 +434,7 @@ function reprocessPoints($mapID, $day, $duration, $html = True){
     }
 
     // add future route if needed
-    if ($day >= strtotime(date("Y-m-d"))) {
-        $lastRoute = $routesSecondSplit[count($routesSecondSplit) - 1];
-        $lastPoint = $lastRoute[count($lastRoute) - 1];
-
+    if (($day + $duration) >= strtotime(date("Y-m-d"))) {
         $now = time();
         $future =  strtotime(date("Y-m-d")) + 604800;
         
