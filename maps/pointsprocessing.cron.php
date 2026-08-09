@@ -6,14 +6,15 @@
 
 // NOTE:
 // If the system is hosting users in multiple locations this may result in interesting results for users who are likely to be uploading data whilst processing is running.
-// I intent to fix this at a later date by changing the cron job to run every hour and adding a feature where users can change the time they want the data to be processed. This will also allow users not to process data if they do not wish to.
+// I intended to fix this at a later date by changing the cron job to run every hour and adding a feature where users can change the time they want the data to be processed. This would also have allow users not to process data if they do not wish to.
+// I wil likely never fix this.
 
 include "util.inc";
 
 $maps = GetAllMapIDs();
 
 //set day and duration
-$day = strtotime(date("Y-m-d"));
+$day = strtotime(date("Y-m-d"))-86400;
 $duration = 172800;
 
 //get output file 

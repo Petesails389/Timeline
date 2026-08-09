@@ -350,13 +350,13 @@ function reprocessPoints($mapID, $day, $duration, $html = True){
 
     //adjust duration based on routes in time specified
     $routes = GetRoutes($mapID, $day, $duration);
-    $start = $day - $duration;
+    $end = $day + $duration;
 
     if (count($routes) > 0){
-        $start = min($routes[0][0], $start);
+        $day = min($routes[0][0], $day);
     }
 
-    $duration = $day - $start;
+    $duration = $end - $day;
     
     //clear routes
     ClearRoutes($mapID, $day, $duration);

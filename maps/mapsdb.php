@@ -233,8 +233,8 @@ function ClearRoutes($mapID,$day = NULL, $duration=86400){
     //delete all routes in time range
     $statement = $db->prepare('DELETE FROM mapRoutes WHERE mapID = :mapID AND startTime >= :startTime AND startTime <= :endTime');
     $statement->bindValue(':mapID',$mapID);
-    $statement->bindValue(':startTime',$day-$duration);
-    $statement->bindValue(':endTime',$day);
+    $statement->bindValue(':startTime',$day);
+    $statement->bindValue(':endTime',$day+$duration);
     $statement->execute();
 }
 
@@ -298,7 +298,7 @@ function GetPoints($mapID,$day = NULL, $duration=86400){
 
 function GetRoutes($mapID,$day = NULL, $duration=86400){
     if ($day == NULL) {
-        $day = strtotime(date("Y-m-d")+86400);
+        $day = strtotime(date("Y-m-d"));
     }
     global $db;
     $statement = $db->prepare('SELECT startTime, endTime, routeType FROM mapRoutes WHERE mapID = :mapID AND endTime >= :startTime AND startTime <= :endTime ORDER BY startTime');
