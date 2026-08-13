@@ -455,5 +455,5 @@ function reprocessPoints($mapID, $day, $duration, $html = True){
 session_start();
 session_reset();
 include "mapsdb.php";
-include "../accounts/db.php";
+include "/var/www/html/accounts/db.php";
 ?>
