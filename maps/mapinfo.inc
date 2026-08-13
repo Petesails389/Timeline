@@ -35,6 +35,11 @@ if (!GetMapPermission($mapID,GetUserID($_SESSION['username']),$shareCode)){
 $day = $permissions["startTime"];
 $duration = $permissions["endTime"]-$permissions["startTime"];
 
+if ($permissions['owner']){
+    $duration = 86400;
+    $day = strtotime(date("Y-m-d"));
+}
+
 //if allowed to browse history
 if ($permissions["history"]){
     if (isset($_GET["duration"])) {
