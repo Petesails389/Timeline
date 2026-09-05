@@ -34,6 +34,7 @@ if (!GetMapPermission($mapID,GetUserID($_SESSION['username']),$shareCode)){
 //sets day and range of data (permission will return the duration of the whole map if they are the owner)
 $day = $permissions["startTime"];
 $duration = $permissions["endTime"]-$permissions["startTime"];
+$maxDuration = $duration;
 
 if ($permissions['owner']){
     $duration = 86400;
@@ -43,7 +44,7 @@ if ($permissions['owner']){
 //if allowed to browse history
 if ($permissions["history"]){
     if (isset($_GET["duration"])) {
-        $duration = min($duration, $_GET["duration"]);
+        $duration = min($maxDuration, $_GET["duration"]);
     }
     if (isset($_GET["day"])) {
         $day = max(min($permissions["endTime"]-$duration,$_GET["day"]),$permissions["startTime"]);
