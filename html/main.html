@@ -1,0 +1,72 @@
+{{define "main"}}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>{{.Name}}</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/5/w3.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" />
+    <style>
+        .material-symbols-outlined {
+        font-variation-settings:
+        'FILL' 0,
+        'wght' 400,
+        'GRAD' 0,
+        'opsz' 24
+        }
+    </style>
+    <link rel="stylesheet" href="/css/style.css">
+    <script src="/js/js.js"></script>
+</head>
+
+
+<body class="w3-theme-l5">
+  <div class="main">
+
+    <!-- sidebar -->
+    <div class="w3-sidebar w3-bar-block w3-theme-d4" style="display:none; z-index: 1002; margin-top: 46px;" id="navBar">
+      <button onclick="accordian('Projects')" class="w3-bar-item w3-button w3-hover-theme">Projects</button>
+      <div id="Projects" class="w3-hide w3-theme-d2">
+        <a href="/maps" class="w3-bar-item w3-button w3-hover-theme">Maps</a>
+        <a href="/bingo" class="w3-bar-item w3-button w3-hover-theme">Bingo</a>
+        <a href="/Murder" class="w3-bar-item w3-button w3-hover-theme">Murder Game Randomiser</a>
+      </div>
+      <button onclick="accordian('Social')" class="w3-bar-item w3-button w3-hover-theme">Social</button>
+      <div id="Social" class="w3-hide w3-theme-d2">
+        <a href="https://www.instagram.com/petesails389/" class="w3-button w3-hover-theme w3-block w3-left-align">Instagram</a>
+        <a href="https://www.discordapp.com/users/710895856366125106" class="w3-button w3-hover-theme w3-block w3-left-align">Discord</a>
+        <a href="https://steamcommunity.com/profiles/76561199089964849" class="w3-button w3-hover-theme w3-block w3-left-align">Steam</a>
+        <a href="https://open.spotify.com/user/31kxvx6co3w5baotgugg2fpkb4za?si=30dd9cd7f06d4a3b" class="w3-button w3-hover-theme w3-block w3-left-align">Spotify</a>
+        <a href="https://www.youtube.com/channel/UCxFsCSP8MLIfqVqZSvMlW_w" class="w3-button w3-hover-theme w3-block w3-left-align">Youtube</a>
+        <a href="https://www.twitch.tv/petesails389" class="w3-button w3-hover-theme w3-block w3-left-align">Twitch</a>
+      </div>
+    </div>
+
+
+    <!-- Header -->
+    <header class="nav w3-bar w3-monospace w3-theme-d4">
+      <button class="w3-bar-item w3-button w3-hover-theme" onclick="nav_open()" id="navBarButton"><span class="material-symbols-outlined">menu</span></button>
+      <a href="/" class="w3-bar-item w3-button w3-hover-theme"><span class="material-symbols-outlined">home</span></a>
+      <a href="/accounts/account.php" class="w3-bar-item w3-button w3-hover-theme w3-right"><span class="material-symbols-outlined">AccountSymbol</span></a>
+      <a href="/accounts/logout.php" class="w3-bar-item w3-button w3-hover-theme w3-right"><span class="material-symbols-outlined">logout</span></a>
+    </header>
+
+    <!-- Body -->
+    <div class="content w3-monospace">  
+      {{template "content" .}}
+    </div>
+
+    <!-- Footer -->
+    <footer class="end w3-container w3-theme-d4">
+    <p>
+        You've reached the end of the page. A few credits on the site all here because it's easier!<br>
+        <a href="https://www.vecteezy.com/free-vector/crime-scene">Crime Scene Vectors by Vecteezy</a>
+    </p>
+    </footer>
+
+  </div>
+</body>
+</html>
+
+{{end}}
