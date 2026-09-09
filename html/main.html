@@ -28,9 +28,9 @@
     <div class="w3-sidebar w3-bar-block w3-theme-d4" style="display:none; z-index: 1002; margin-top: 46px;" id="navBar">
       <button onclick="accordian('Projects')" class="w3-bar-item w3-button w3-hover-theme">Projects</button>
       <div id="Projects" class="w3-hide w3-theme-d2">
-        <a href="/maps" class="w3-bar-item w3-button w3-hover-theme">Maps</a>
-        <a href="/bingo" class="w3-bar-item w3-button w3-hover-theme">Bingo</a>
-        <a href="/Murder" class="w3-bar-item w3-button w3-hover-theme">Murder Game Randomiser</a>
+        <a href="/maps/" class="w3-bar-item w3-button w3-hover-theme">Maps</a>
+        <a href="/bingo/" class="w3-bar-item w3-button w3-hover-theme">Bingo</a>
+        <a href="/Murder/" class="w3-bar-item w3-button w3-hover-theme">Murder Game Randomiser</a>
       </div>
       <button onclick="accordian('Social')" class="w3-bar-item w3-button w3-hover-theme">Social</button>
       <div id="Social" class="w3-hide w3-theme-d2">
@@ -48,8 +48,11 @@
     <header class="nav w3-bar w3-monospace w3-theme-d4">
       <button class="w3-bar-item w3-button w3-hover-theme" onclick="nav_open()" id="navBarButton"><span class="material-symbols-outlined">menu</span></button>
       <a href="/" class="w3-bar-item w3-button w3-hover-theme"><span class="material-symbols-outlined">home</span></a>
-      <a href="/accounts/account.php" class="w3-bar-item w3-button w3-hover-theme w3-right"><span class="material-symbols-outlined">AccountSymbol</span></a>
-      <a href="/accounts/logout.php" class="w3-bar-item w3-button w3-hover-theme w3-right"><span class="material-symbols-outlined">logout</span></a>
+
+      <a href="/accounts/account" class="w3-bar-item w3-button w3-hover-theme w3-right logged-in" style="display: none;"><span class="material-symbols-outlined">account_circle</span></a>
+      <a href="/accounts/logout" class="w3-bar-item w3-button w3-hover-theme w3-right logged-in" style="display: none;"><span class="material-symbols-outlined">logout</span></a>
+
+      <a href="/accounts/account" class="logged-out w3-bar-item w3-button w3-hover-theme w3-right"><span class="material-symbols-outlined">login</span></a>
     </header>
 
     <!-- Body -->
@@ -67,6 +70,39 @@
 
   </div>
 </body>
+
+<!-- Sort out login session -->
+<script>
+  var ActiveSession = "{{.ActiveSession}}";
+  if (ActiveSession == "true") {
+
+    //hide all logged-out elements
+    x = document.getElementsByClassName("logged-out");
+    for (i = 0; i < x.length; i++) {
+      x[i].style.display = "none";
+    }
+
+    //show all logged-in elements
+    x = document.getElementsByClassName("logged-in");
+    for (i = 0; i < x.length; i++) {
+      x[i].style.display = "";
+    }
+  }
+</script>
+
+<!-- Sort out tabs -->
+<script>
+  var setTabFocus = "{{.TabFocus}}";
+  if (setTabFocus != "" && tabOptions && tabOptions.includes(setTabFocus)) {
+    tabFocus = setTabFocus;
+  }
+
+  if (tabFocus) {
+    document.getElementById(tabFocus).style.display = "block";
+    document.getElementById(tabFocus+"Tab").className += " w3-theme-d4";
+  }
+</script>
+
 </html>
 
 {{end}}

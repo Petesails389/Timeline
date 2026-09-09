@@ -6,11 +6,14 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"strings"
 	"text/template"
 )
 
 type Page struct {
-	Name string
+	Name          string
+	ActiveSession string
+	TabFocus      string
 }
 
 func renderTemplate(w http.ResponseWriter, path string, data *Page) {
@@ -25,17 +28,23 @@ func renderTemplate(w http.ResponseWriter, path string, data *Page) {
 }
 
 func HTMLHandler(w http.ResponseWriter, r *http.Request) {
-	page := r.URL.Path[len("/"):]
+	lastIndex := strings.LastIndex(r.URL.Path, "/")
+	page := r.URL.Path[lastIndex+1:]
+	path := r.URL.Path[1 : lastIndex+1]
+
 	if len(page) == 0 {
-		page = "index.html"
+		page = "index"
 	}
 
-	path := "../html/" + page + ".html"
+	path = "../html/" + path + page + ".html"
 	if _, err := os.Stat(path); err != nil {
 		http.Error(w, "404: Not found", http.StatusNotFound)
 		return
 	}
-	renderTemplate(w, path, &Page{Name: page})
+
+	tabFocus := r.URL.Query().Get("focus")
+
+	renderTemplate(w, path, &Page{Name: page, ActiveSession: "true", TabFocus: tabFocus})
 }
 
 func GETHandler(w http.ResponseWriter, r *http.Request) {
