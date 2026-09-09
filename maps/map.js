@@ -284,11 +284,18 @@ function drawMap() {
     attribution: attThunder
     });
 
+    //heatmap Layer
+    mapID = new URL(document.URL).searchParams.get("mapID");
+    shareCode = new URL(document.URL).searchParams.get("shareCode")
+    var userHM = L.tileLayer(`https://peter.thesparrows.net/maps/heatmap/hmtile.png.php?z={z}&x={x}&y={y}&mapID=${mapID}&shareCode=${shareCode}`, {
+    maxZoom: 17
+    });
+
     //actual map
     map = L.map('map', {
         center: [0,0],
         zoom: 10,
-        layers: [osm, highlightLayer, markers]
+        layers: [osm, userHM, highlightLayer, markers]
     });
 
     //layer controls
@@ -304,6 +311,7 @@ function drawMap() {
     };
 
     var overlayLayers = {
+        "Heatmap": userHM,
         "Markers": markers
     };
 
