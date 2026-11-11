@@ -127,7 +127,7 @@ function GetMapPermissions($mapID,$userID, $shareCode = NULL){
     $statement = $db->prepare('SELECT history, current, startTime, endTime FROM mapShares WHERE userID = :userID AND mapID = :mapID AND shareCode = :shareCode');
     $statement->bindValue(':userID',$userID);
     $statement->bindValue(':mapID',$mapID);
-    $statement->bindValue(':shareCode',$shareCode);
+    $statement->bindValue(':shareCode',$shareCode ?? "");
     $result = $statement->execute()->fetchArray(SQLITE3_NUM);
     if($result == false){
         if( CheckMapOwner($mapID,$userID) != NULL){
@@ -136,7 +136,7 @@ function GetMapPermissions($mapID,$userID, $shareCode = NULL){
             $result = [0, 0, 0, 0, false];
         }
     } else {
-        $result = [$result[0]==1,$result[1]==1, $result[2], $result[3], false];
+        $result = [$result[0]==1,$result[1]==1, $result[2], min($result[3], strtotime(date("Y-m-d")) + 86400), false];
     }
 
     return array("history" => $result[0], "current" => $result[1], "startTime" => $result[2], "endTime" => $result[3], "owner" => $result[4]);
@@ -151,7 +151,7 @@ function GetMapPermission($mapID,$userID, $shareCode = NULL) {
     $statement = $db->prepare('SELECT mapID FROM mapShares WHERE userID = :userID AND mapID = :mapID AND shareCode = :shareCode');
     $statement->bindValue(':userID',$userID);
     $statement->bindValue(':mapID',$mapID);
-    $statement->bindValue('shareCode',$shareCode);
+    $statement->bindValue('shareCode',$shareCode ?? "");
     $result = $statement->execute()->fetchArray(SQLITE3_NUM);
     if($result == false){
         return $owner;
@@ -195,7 +195,7 @@ function AddPoint($mapID, $lat, $lng, $time, $speed = NULL, $elevation = NULL) {
     $statement->bindValue(':time',$time);
     $statement->bindValue(':speed',$speed);
     $statement->bindValue(':elevation',$elevation);
-    $statement->execute();
+    return $statement->execute();
 }
 
 function AddPoints($mapID, $points) {
@@ -211,7 +211,7 @@ function AddPoints($mapID, $points) {
 
         $sql = $sql.(implode(',', $pointsText)).";";
         $statement = $db->prepare($sql);
-        $statement->execute();
+        return $statement->execute();
     }
 }
 

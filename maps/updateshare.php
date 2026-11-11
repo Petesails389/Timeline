@@ -47,12 +47,13 @@ if (!isset($_POST["expires"])){
     http_response_code(400);
     exit;
 }
+$permissions = GetMapPermissions($mapID,GetUserID($_SESSION['username']));
 
 $shareUserID = GetUserID($_POST["username"] ?? NULL);
 $shareCode = $_POST["shareCode"] ?? NULL;
 $heatmap = isset($_POST["heatmap"]);
 $live = isset($_POST["live"]);
-$startTime = strtotime($_POST["start"]);
+$startTime = max(strtotime($_POST["start"]),$permissions['startTime']);
 $endTime = strtotime($_POST["end"]);
 $expires = strtotime($_POST["expires"]);
 
