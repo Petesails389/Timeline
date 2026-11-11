@@ -43,6 +43,11 @@ if ($permissions['owner']){
 
 //if allowed to browse history
 if ($permissions["history"]){
+    //adjust to reasonable defaults
+    $duration = min($permissions["endTime"]-$permissions["startTime"], 86400); //if they have permission to veiw more than a week default to something more sensible
+    $day = max($permissions['startTime'], $permissions["endTime"] - $duration); // adjust start date to match duration if needed
+
+    //adjust to request
     if (isset($_GET["duration"])) {
         $duration = min($maxDuration, $_GET["duration"]);
     }
