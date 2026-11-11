@@ -43,6 +43,18 @@ if (CheckMapOwner($mapID,$userID) == NULL){
     exit;
 }
 
-AddPoint($mapID, $lat, $lng, $time, NULL, NULL);
+$latArray = explode(",",$lat);
+$lngArray = explode(",",$lng);
+$timeArray = explode(",",$time);
+
+if (count($latArray) != count($lngArray) || count($latArray) != count($timeArray)) {
+    http_response_code(400);
+}
+
+for ($x = 0; $x < count($latArray); $x++) {
+    if (AddPoint($mapID, $latArray[$x], $lngArray[$x], $timeArray[$x], NULL, NULL) == false) {
+        http_response_code(500);
+    }
+}
 
 ?>
